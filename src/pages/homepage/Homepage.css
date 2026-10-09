@@ -1,0 +1,57 @@
+.site-content:has(> .homepage) { padding: 0; }
+.sunday-hero { position: relative; isolation: isolate; height: calc(100svh - 56px); min-height: 420px; overflow: hidden; background: #191919; }
+.sunday-hero-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; z-index: -2; }
+.sunday-hero::after { content: ''; position: absolute; inset: 0; background: rgb(0 0 0 / 15%); z-index: -1; }
+.sunday-hero-content { display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding: 112px 36px 32px; color: var(--color-white); }
+.sunday-hero-top { display: flex; justify-content: space-between; gap: 32px; }
+.sunday-hero-top p { margin: 0; font-size: 32px; line-height: 1.2; font-weight: 450; }
+.sunday-hero-top > span { font-size: 24px; line-height: 1.15; text-align: right; }
+.sunday-hero-caption { margin: 0; font-size: 16px; font-weight: 450; line-height: 1.5; }
+.sunday-hero-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.sunday-wordmark { position: fixed; top: 0; left: 0; display: flex; justify-content: center; width: 100%; z-index: 41; pointer-events: none; transform-origin: center top; will-change: transform; }
+.site-content .sunday-wordmark h1 { flex: none; font-size: 280px; font-weight: 750; line-height: .94; white-space: nowrap; margin: 0; color: var(--color-accent); }
+.sunday-wordmark a { pointer-events: auto; text-decoration: none; }
+.sunday-wordmark sup { display: inline-block; vertical-align: top; margin-top: 16px; font-size: 24px; line-height: 1; }
+.sunday-hero-link { display: inline-flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 500; text-decoration: none; white-space: nowrap; }
+.sunday-hero-link svg { width: 24px; height: 24px; }
+.sunday-services { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px 36px; background: var(--color-black); color: var(--color-white); }
+.sunday-services p { margin: 0; font-size: 14px; line-height: 1.5; }
+.sunday-services a { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; white-space: nowrap; }
+.sunday-hero-link:hover, .sunday-services a:hover { color: var(--color-accent); }
+.sunday-introduction { min-height: 100svh; padding: 100px 36px 64px; background: var(--color-black); }
+.sunday-section-label { margin: 0 0 32px; font-size: 14px; color: #aaa; }
+.sunday-introduction h2 { margin: 0 0 56px; font-size: 64px; font-weight: 450; line-height: 1.1; }
+.sunday-discipline-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin-bottom: 56px; border-top: 1px solid #444; }
+.sunday-discipline-list > div { display: flex; flex-direction: column; gap: 24px; padding-top: 24px; }
+.sunday-discipline-list > div span:first-child { font-size: 12px; color: var(--color-accent); }
+.sunday-discipline-list > div span:last-child { font-size: 22px; }
+@media (min-width: 1600px) {
+  .sunday-hero-content { padding: 152px 48px 40px; }
+  .sunday-services, .sunday-introduction { padding-inline: 48px; }
+}
+@media (max-width: 1100px) {
+  .sunday-discipline-list { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 24px; }
+}
+@media (max-width: 760px) {
+  .sunday-hero { height: calc(100svh - 64px); min-height: 380px; }
+  .sunday-hero-image { object-position: 62% 40%; }
+  .sunday-hero-content { padding: 112px 20px 24px; }
+  .sunday-hero-top p { font-size: 22px; }
+  .sunday-hero-top > span { display: none; }
+  .sunday-hero-caption { font-size: 12px; }
+  .site-content .sunday-wordmark h1 { font-size: 120px; }
+  .sunday-wordmark sup { font-size: 12px; margin-top: 6px; }
+  .sunday-hero-link { font-size: 14px; }
+  .sunday-services { flex-wrap: wrap; gap: 12px; padding: 16px 20px; }
+  .sunday-services p, .sunday-services a { font-size: 12px; }
+  .sunday-introduction { padding: 88px 20px 48px; }
+  .sunday-introduction h2 { font-size: 40px; margin-bottom: 40px; }
+  .sunday-discipline-list { display: flex; flex-direction: column; margin-bottom: 40px; gap: 0; }
+  .sunday-discipline-list > div { flex-direction: row; align-items: center; gap: 24px; padding: 20px 0; border-bottom: 1px solid #333; }
+  .sunday-discipline-list > div span:last-child { font-size: 20px; }
+}
+@media (max-height: 600px) and (min-width: 761px) {
+  .sunday-hero-content { padding-top: 96px; }
+  .sunday-hero-top p { font-size: 24px; }
+  .sunday-hero-top > span { font-size: 18px; }
+}

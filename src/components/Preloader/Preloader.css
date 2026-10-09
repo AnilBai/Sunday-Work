@@ -1,0 +1,72 @@
+.sunday-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: #050505;
+  color: #fff;
+  font-family: inherit;
+  will-change: transform;
+}
+
+.sunday-preloader__label {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  max-width: calc(100% - 32px);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.sunday-preloader__brand { flex: none; }
+.sunday-preloader__letter {
+  display: inline-block;
+  opacity: 0;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.sunday-preloader__brand sup {
+  position: relative;
+  top: -.65em;
+  margin-left: 2px;
+  font-size: .46em;
+  vertical-align: baseline;
+}
+
+.sunday-preloader__slot {
+  display: grid;
+  align-items: baseline;
+  flex: none;
+  overflow: hidden;
+  color: #808080;
+  font: inherit;
+}
+
+.sunday-preloader__slot > span,
+.sunday-preloader__measure > span {
+  grid-area: 1 / 1;
+  justify-self: start;
+  font: inherit;
+}
+
+.sunday-preloader__text {
+  display: inline-block;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* Reserve the longest word's width so Sunday stays stationary. */
+.sunday-preloader__measure {
+  display: grid;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (max-width: 650px) {
+  .sunday-preloader__label { font-size: 20px; }
+}
