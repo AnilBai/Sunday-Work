@@ -25,11 +25,18 @@ export default function Footer({ privacyUrl, termsUrl }: FooterProps) {
       const width = text.getBoundingClientRect().width
       if (width) text.style.fontSize = `${100 * (container.clientWidth - 2) / (width + 3.5)}px`
     }
-    const observer = new ResizeObserver(fit)
+    let lastWidth = -1
+    const observer = new ResizeObserver(([entry]) => {
+      const width = entry.contentRect.width
+      if (Math.abs(width - lastWidth) < .1) return
+      lastWidth = width
+      fit()
+    })
     observer.observe(container)
     fit()
     void document.fonts.ready.then(fit)
-    return () => { disposed = true; observer.disconnect() }
+    document.fonts.addEventListener('loadingdone', fit)
+    return () => { disposed = true; observer.disconnect(); document.fonts.removeEventListener('loadingdone', fit) }
   }, [])
   const legal = [
     { label: 'Privacy Policy', href: privacyUrl },
@@ -46,7 +53,7 @@ export default function Footer({ privacyUrl, termsUrl }: FooterProps) {
       </nav>
       <div className="sunday-footer-contact" aria-label="Contact details">
         <a href="mailto:hello@sundayandcompany.com">hello@sundayandcompany.com</a>
-        <a href="tel:+910876543210">+91 0876543210</a>
+        <a href="tel:+910876543210">+91 9876543210</a>
       </div>
     </div>
     <Link className="sunday-footer-wordmark" to="/" aria-label="Sunday & Company homepage" onClick={() => {

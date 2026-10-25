@@ -83,8 +83,6 @@
 .sunday-hero-bottom { border-top: 1px solid #fffff37a; padding-top: 20px; margin-top: 8px; }
 .sunday-hero-bottom p { max-width: 390px; margin: 0; font-size: 18px; line-height: 1.25; }
 .sunday-hero-bottom .sunday-hero-link { font: 12px 'Sunday Mono', monospace; padding: 12px 20px; border: 1px solid #fffff37a; text-transform: uppercase; }
-.site-header:has(~ .site-content .sunday-hero) { background: #000; }
-.site-header.hero-brand-docked { background: #000; }
 .sunday-reel-dialog { position: fixed; inset: 0; width: min(1000px, 94vw); border: 1px solid #ffffff50; background: #10264f; color: white; padding: 16px; }
 .sunday-reel-dialog::backdrop { background: #000c; }
 .sunday-reel-dialog > button { display: block; margin: 0 0 14px auto; padding: 8px 12px; background: transparent; color: inherit; border: 1px solid #ffffff60; cursor: pointer; }
@@ -108,15 +106,12 @@
   .sunday-hero-bottom { align-items: flex-start; flex-direction: column; gap: 22px; padding-top: 18px; }
   .sunday-hero-bottom p { font-size: 16px; max-width: 350px; }
 }
-.site-header.hero-brand-docked:has(~ .site-content .sunday-hero) { background: #000; }
 @media(max-width: 760px) {
   .site-content .sunday-wordmark h1 { font-size: 31vw; }
 }
 
 /* Reference stretch type: SVG glyphs share a baseline and spring independently. */
 .sunday-hero { background: #0054b5; color: #fff; }
-.site-header:has(~ .site-content .sunday-hero) { background: #000; }
-.site-header.hero-brand-docked:has(~ .site-content .sunday-hero) { background: #000; }
 .site-content .sunday-wordmark h1 { height: min(36vw, 56svh); font-size: inherit; line-height: 1; color: #fff; }
 .sunday-wordmark h1 a { display: block; height: 100%; cursor: default; }
 .sunday-stretch-type { display: block; overflow: visible; font-family: 'Sunday Anton', Impact, sans-serif; font-weight: 400; }

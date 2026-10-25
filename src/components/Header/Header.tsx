@@ -45,9 +45,17 @@ export default function Header() {
   const { pathname } = useLocation()
   const [mounted, setMounted] = useState(false)
   const [expanded, setExpanded] = useState(false)
+  const [scrolled, setScrolled] = useState(() => window.scrollY > 24)
   const dialog = useRef<HTMLDialogElement>(null)
   const closeButton = useRef<HTMLButtonElement>(null)
   const reducedMotion = useReducedMotion()
+
+  useEffect(() => {
+    const updateScroll = () => setScrolled(window.scrollY > 24)
+    updateScroll()
+    window.addEventListener('scroll', updateScroll, { passive: true })
+    return () => window.removeEventListener('scroll', updateScroll)
+  }, [])
 
   useEffect(() => {
     const menu = dialog.current
@@ -63,7 +71,7 @@ export default function Header() {
   const closeMenu = () => setExpanded(false)
 
   return <>
-    <header className="site-header" data-menu-open={mounted} inert={mounted} aria-hidden={mounted || undefined}>
+    <header className="site-header" data-scrolled={scrolled} data-menu-open={mounted} inert={mounted} aria-hidden={mounted || undefined}>
       <SocialRow />
       {pathname !== '/' && <Link className="header-brand-center" to="/" aria-label="Sunday & Company homepage">Sunday &amp; Company</Link>}
       <button className="header-menu-button" type="button" aria-label="Open menu" title="Open menu"

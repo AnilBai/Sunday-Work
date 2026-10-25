@@ -155,16 +155,32 @@ export default function Homepage() {
       const headerCenter = () => (document.querySelector('.site-header')?.getBoundingClientRect().height ?? 80) / 2
       const logoHeight = () => logo.offsetHeight
       const heroScale = () => 1
+      const glyphSize = () => {
+        const svg = title.querySelector('svg')
+        const sample = svg?.querySelector('text')
+        if (!svg || !sample) return { width: title.offsetWidth, height: title.offsetHeight / 1.51 }
+        const width = sample.getComputedTextLength()
+        const canvas = document.createElement('canvas').getContext('2d')
+        if (canvas) canvas.font = `400 100px ${getComputedStyle(svg).fontFamily}`
+        const height = canvas?.measureText('SUNDAY').actualBoundingBoxAscent || sample.getBBox().height
+        if (!width || !height) return { width: title.offsetWidth, height: title.offsetHeight / 1.51 }
+        const fittedScale = Math.min(svg.clientWidth / width, svg.clientHeight / (height * 1.51))
+        return { width: width * fittedScale, height: height * fittedScale }
+      }
       const compactScale = () => {
-        const baseFont = title.offsetHeight / 1.51
-        const availableWidth = section.clientWidth - (window.innerWidth <= 900 ? 152 : 144)
-        return Math.min((window.innerWidth <= 900 ? 20 : 26) / baseFont, availableWidth / title.offsetWidth)
+        const size = glyphSize()
+        const viewport = section.clientWidth
+        const targetHeight = viewport <= 360 ? 26 : viewport <= 900 ? 30 : viewport >= 1600 ? 40 : 34
+        const gutter = viewport <= 900 ? 20 : viewport >= 1600 ? 48 : 36
+        const buttonWidth = viewport <= 900 ? 44 : 56
+        const availableWidth = viewport - 2 * (gutter + buttonWidth + 16)
+        return Math.min(targetHeight / size.height, availableWidth / size.width)
       }
       gsap.fromTo(logo, {
         y: () => section.querySelector<HTMLElement>('.sunday-title-space')!.offsetTop,
         scale: heroScale,
       }, {
-        y: () => headerCenter() - logoHeight() * compactScale() * (1 - 1 / (1.51 * 2)),
+        y: () => headerCenter() - (logoHeight() - glyphSize().height / 2) * compactScale(),
         scale: compactScale,
         ease: 'none',
         onUpdate: () => {
