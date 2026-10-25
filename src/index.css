@@ -7,10 +7,11 @@
 }
 
 :root {
+  --font-sans: 'BDO Grotesk Variable', sans-serif;
   --color-black: #000;
   --color-white: #fff;
-  --color-accent: #f40;
-  font-family: 'BDO Grotesk Variable', Arial, sans-serif;
+  --color-accent: #0054b5;
+  font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -18,7 +19,7 @@
   background: var(--color-black);
   color: var(--color-white);
 }
-* { box-sizing: border-box; letter-spacing: 0; }
+* { box-sizing: border-box; letter-spacing: 0; font-family: inherit; }
 body { min-width: 320px; min-height: 100vh; margin: 0; }
 button, input, textarea, select { font: inherit; }
 a { color: inherit; }

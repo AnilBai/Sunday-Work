@@ -1,9 +1,12 @@
 .site-header { position: fixed; inset: 0 0 auto; z-index: 40; display: flex; align-items: center; justify-content: space-between; height: 80px; padding: 0 36px; color: #fff; }
-.header-socials { display: flex; align-items: center; gap: 24px; font-size: 18px; font-weight: 500; }
+.site-header[data-menu-open="true"] { visibility: hidden; pointer-events: none; }
+.header-socials { display: flex; align-items: center; gap: 24px; font-family: var(--font-sans); font-size: 18px; font-weight: 300; line-height: 1; white-space: nowrap; }
+.header-socials > span { display: block; }
+.site-header .header-socials { opacity: var(--social-opacity, 1); transform: translateX(var(--social-shift, 0px)); will-change: opacity, transform; }
 .header-brand-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: 750; text-decoration: none; color: var(--color-accent); white-space: nowrap; }
 .header-brand-center sup { font-size: 6px; vertical-align: top; }
 .header-menu-button { display: grid; place-items: center; flex: none; width: 56px; height: 56px; padding: 0; margin-left: auto; background: transparent; border: 1px solid currentColor; border-radius: 50%; color: inherit; cursor: pointer; }
-.header-menu-button:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+.header-menu-button:focus-visible { outline: none; color: var(--color-accent); background: rgb(255 68 0 / 12%); }
 .header-menu-symbol { position: relative; display: grid; place-items: center; width: 52px; height: 52px; }
 .header-menu-symbol svg { width: 52px; height: 52px; }
 .header-menu-symbol-rotating { position: absolute; inset: 0; display: grid; place-items: center; }
@@ -53,9 +56,8 @@
 @media (max-width: 900px) {
   .site-header { height: 72px; padding: 0 20px; }
   .header-socials { font-size: 14px; gap: 16px; }
-  .site-header .header-socials { transition: opacity .2s; }
-  .site-header[data-brand-docked="true"] .header-socials, .site-header:has(.header-brand-center) .header-socials { opacity: 0; visibility: hidden; }
-  .header-brand-center { font-size: 22px; }
+  .site-header:has(.header-brand-center) .header-socials { opacity: 0; visibility: hidden; }
+  .header-brand-center { font-size: 18px; }
   .header-menu-button { width: 44px; height: 44px; }
   .header-menu-symbol, .header-menu-symbol svg { width: 40px; height: 40px; }
   .header-menu-inner { padding: 0 20px 28px; }
@@ -71,8 +73,21 @@
   .header-menu-legal { padding-top: 32px; font-size: 18px; gap: 14px; }
 }
 @media (max-width: 360px) {
+  .header-brand-center { font-size: 16px; }
   .header-socials { font-size: 12px; gap: 12px; }
   .header-menu-intro h2 { font-size: 20px; }
   .header-menu-links a { font-size: 42px; }
 }
+@media (min-width: 901px) and (max-width: 1100px) {
+  .site-header:has(.header-brand-center) .header-socials { opacity: 0; visibility: hidden; }
+}
 @media (prefers-reduced-motion: reduce) { .header-menu-links a { transition: none; } }
+
+/* Keep navigation above the animated hero and white in every control state. */
+.site-header { z-index: 50; color: #fff; }
+.site-header .header-socials, .site-header .header-brand-center,
+.site-header .header-menu-button, .site-header .header-menu-button:hover,
+.site-header .header-menu-button:focus-visible { color: #fff; }
+.site-header .header-menu-button:focus-visible { background: transparent; outline: 2px solid #fff; outline-offset: 4px; }
+.site-header .header-menu-symbol svg { stroke: #fff; }
+.site-header .header-socials, .site-header .header-menu-button { position: relative; z-index: 2; }

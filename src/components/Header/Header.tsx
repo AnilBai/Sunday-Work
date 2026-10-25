@@ -63,9 +63,9 @@ export default function Header() {
   const closeMenu = () => setExpanded(false)
 
   return <>
-    <header className="site-header">
+    <header className="site-header" data-menu-open={mounted} inert={mounted} aria-hidden={mounted || undefined}>
       <SocialRow />
-      {pathname !== '/' && <Link className="header-brand-center" to="/" aria-label="Sunday homepage">SUNDAY<sup>{'\u2122'}</sup></Link>}
+      {pathname !== '/' && <Link className="header-brand-center" to="/" aria-label="Sunday & Company homepage">Sunday &amp; Company</Link>}
       <button className="header-menu-button" type="button" aria-label="Open menu" title="Open menu"
         aria-expanded={mounted} aria-controls="sunday-navigation" onClick={openMenu}>
         <MenuSymbol expanded={expanded} reducedMotion={!!reducedMotion} />
@@ -93,7 +93,7 @@ export default function Header() {
             <span>Privacy Policy</span><span>Terms of Service</span><span>Disclaimer</span>
           </div>
           <div className="header-menu-intro">
-            <h2>We{'\u2019'}re based in <span className="header-location">India, Dubai, and the USA</span>, and we work remotely.</h2>
+            <h2>We{'\u2019'}re based in <span className="header-location">India, Dubai, and USA</span>, and we work remotely.</h2>
             <StudioClock />
           </div>
         </div>
