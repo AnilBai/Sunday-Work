@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import Header from './components/Header/Header'
+import Footer from './components/Footer/Footer'
 import Preloader from './components/Preloader/Preloader'
 import About from './pages/about/About'
 import Contact from './pages/contact/Contact'
@@ -28,6 +29,7 @@ function App() {
             <Route path="*" element={<Link to="/">Return to homepage</Link>} />
           </Routes>
         </div>
+        <Footer />
       </div>
       {loading && <Preloader onComplete={completeLoading} />}
     </>
