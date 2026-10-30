@@ -1,13 +1,5 @@
-@font-face {
-  font-family: 'BDO Grotesk Variable';
-  src: url('/fonts/BDOGrotesk-VF.ttf') format('truetype');
-  font-weight: 300 900;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
-  --font-sans: 'BDO Grotesk Variable', sans-serif;
+  --font-sans: Helvetica, 'Helvetica Neue', Arial, sans-serif;
   --color-black: #000;
   --color-white: #fff;
   --color-accent: #0054b5;

@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import Header from './components/Header/Header'
+import SmoothScroll from './components/Services/SmoothScroll'
 import Footer from './components/Footer/Footer'
 import Preloader from './components/Preloader/Preloader'
 import About from './pages/about/About'
@@ -16,6 +17,7 @@ function App() {
 
   return (
     <>
+      <SmoothScroll />
       <div inert={loading} aria-hidden={loading || undefined}>
         <Header />
         <div className="site-content">

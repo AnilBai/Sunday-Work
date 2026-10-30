@@ -4,6 +4,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import './Homepage.css'
+import Services from '../../components/Services/Services'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -243,18 +244,6 @@ export default function Homepage() {
       <button aria-label="Close showreel" onClick={() => reelDialog.current?.close()}>Close ×</button>
       {showReel && <video src={reel} controls autoPlay playsInline />}
     </dialog>
-    <section className="sunday-services" aria-label="Our disciplines">
-      <p>Brand / Product / Development / Growth / Intelligence</p>
-      <Link to="/contact">Let&apos;s talk <ArrowUpRight aria-hidden="true" size={18} /></Link>
-    </section>
-    <section className="sunday-introduction" aria-labelledby="sunday-introduction-title">
-      <p className="sunday-section-label">Independent thinking. Shared ambition.</p>
-      <h2 id="sunday-introduction-title">Brands built for<br />what&apos;s next.</h2>
-      <div className="sunday-discipline-list">
-        {['Brand', 'Product', 'Development', 'Growth', 'Intelligence'].map((discipline, index) =>
-          <div key={discipline}><span>0{index + 1}</span><span>{discipline}</span></div>)}
-      </div>
-      <Link className="sunday-hero-link" to="/work">Explore our work <ArrowUpRight aria-hidden="true" /></Link>
-    </section>
+    <Services />
   </main>
 }

@@ -57,23 +57,21 @@
 }
 
 /* Studio Sunday hero; the fixed wordmark retains the header docking motion. */
-@font-face { font-family: 'Sunday Anton'; src: url('https://framerusercontent.com/third-party-assets/fontshare/wf/TPY5PBRHOSXJ53WNSUYZQYX4FZUMAYNF/YHKM2QXXZHS7MS6DJUZXTGRXMIGWH7K5/PCXT6E5YCQO6SSVLT6UZPPGT7QKGXOUS.woff2') format('woff2'); font-weight: 400; font-display: swap; }
-@font-face { font-family: 'Sunday Mono'; src: url('https://fonts.gstatic.com/s/fragmentmono/v6/4iCr6K5wfMRRjxp0DA6-2CLnB4NHhg.woff2') format('woff2'); font-display: swap; }
 .sunday-hero { --hero-gutter: 48px; background: #2855ae; color: #fffff3; height: auto; min-height: 100svh; padding: 96px var(--hero-gutter) 28px; }
 .sunday-hero::after { display: none; }
-.sunday-hero-top { align-items: center; padding: 5px 0 18px; border-bottom: 1px solid #fffff37a; gap: 20px; font-family: 'Sunday Mono', monospace; font-size: 12px; letter-spacing: .02em; }
+.sunday-hero-top { align-items: center; padding: 5px 0 18px; border-bottom: 1px solid #fffff37a; gap: 20px; font-family: var(--font-sans); font-size: 12px; letter-spacing: .02em; }
 .sunday-hero-top > span { font-size: inherit; line-height: 1.4; text-align: left; }
 .sunday-booking { margin-left: auto; }
 .sunday-showreel { display: flex; align-items: center; gap: 20px; width: 306px; padding: 0; margin: 30px 0 46px; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
 .sunday-reel-seal { display: block; flex: none; width: 116px; height: 116px; background: #eeefdd; color: #2855ae; border-radius: 44%; transform: rotate(-10deg); }
 .sunday-reel-seal svg { width: 100%; height: 100%; }
-.sunday-reel-seal text { font: 7.8px 'Sunday Mono', monospace; fill: currentColor; letter-spacing: .1px; }
-.sunday-reel-preview { width: 166px; font: 10px 'Sunday Mono', monospace; }
+.sunday-reel-seal text { font: 7.8px var(--font-sans); fill: currentColor; letter-spacing: .1px; }
+.sunday-reel-preview { width: 166px; font: 10px var(--font-sans); }
 .sunday-reel-preview video { width: 100%; aspect-ratio: 16/9; object-fit: cover; box-shadow: 0 8px 22px #102d7450; }
 .sunday-reel-preview > span { display: flex; justify-content: space-between; margin-top: 7px; }
 .sunday-title-space { height: min(31vw, 49svh); }
 .sunday-wordmark { color: #fffff3; }
-.site-content .sunday-wordmark h1 { font-family: 'Sunday Anton', Impact, sans-serif; font-weight: 400; font-size: min(33vw, 52svh); line-height: .94; letter-spacing: -.012em; color: #fffff3; width: calc(100% - 96px); }
+.site-content .sunday-wordmark h1 { font-family: var(--font-sans); font-weight: 400; font-size: min(33vw, 52svh); line-height: .94; letter-spacing: -.012em; color: #fffff3; width: calc(100% - 96px); }
 .sunday-wordmark h1 a { display: flex; justify-content: space-between; width: 100%; }
 .sunday-wordmark h1 a > span { display: inline-block; transform-origin: center bottom; }
 .sunday-wordmark h1 a > span:nth-child(2) { transform: scaleY(.97); }
@@ -82,7 +80,7 @@
 .sunday-wordmark h1 a > span:nth-child(5) { transform: scaleY(.98); }
 .sunday-hero-bottom { border-top: 1px solid #fffff37a; padding-top: 20px; margin-top: 8px; }
 .sunday-hero-bottom p { max-width: 390px; margin: 0; font-size: 18px; line-height: 1.25; }
-.sunday-hero-bottom .sunday-hero-link { font: 12px 'Sunday Mono', monospace; padding: 12px 20px; border: 1px solid #fffff37a; text-transform: uppercase; }
+.sunday-hero-bottom .sunday-hero-link { font: 12px var(--font-sans); padding: 12px 20px; border: 1px solid #fffff37a; text-transform: uppercase; }
 .sunday-reel-dialog { position: fixed; inset: 0; width: min(1000px, 94vw); border: 1px solid #ffffff50; background: #10264f; color: white; padding: 16px; }
 .sunday-reel-dialog::backdrop { background: #000c; }
 .sunday-reel-dialog > button { display: block; margin: 0 0 14px auto; padding: 8px 12px; background: transparent; color: inherit; border: 1px solid #ffffff60; cursor: pointer; }
@@ -114,7 +112,7 @@
 .sunday-hero { background: #0054b5; color: #fff; }
 .site-content .sunday-wordmark h1 { height: min(36vw, 56svh); font-size: inherit; line-height: 1; color: #fff; }
 .sunday-wordmark h1 a { display: block; height: 100%; cursor: default; }
-.sunday-stretch-type { display: block; overflow: visible; font-family: 'Sunday Anton', Impact, sans-serif; font-weight: 400; }
+.sunday-stretch-type { display: block; overflow: visible; font-family: var(--font-sans); font-weight: 400; }
 .sunday-title-space { height: min(36vw, 56svh); }
 .sunday-showreel { margin-bottom: 0; position: relative; z-index: 2; }
 .sunday-reel-seal { border-radius: 0; background: transparent; color: #0054b5; transform: none; }
@@ -158,7 +156,7 @@
 
 /* Restore the reference's condensed display font without stretching its shape. */
 .site-content .sunday-wordmark h1,
-.sunday-stretch-type { font-family: 'Sunday Anton', Impact, sans-serif; font-weight: 400; }
+.sunday-stretch-type { font-family: var(--font-sans); font-weight: 400; }
 .site-content .sunday-wordmark h1,
 .sunday-title-space { height: clamp(380px, 58svh, 720px); }
 @media(max-width:760px) {
@@ -172,3 +170,8 @@
 
 /* The same animated wordmark must remain above the opaque fixed header. */
 .sunday-wordmark { z-index: 51; }
+
+/* Preserve Sunday's original display lettering while body text uses Helvetica. */
+@font-face { font-family: 'Sunday Anton'; src: url('https://framerusercontent.com/third-party-assets/fontshare/wf/TPY5PBRHOSXJ53WNSUYZQYX4FZUMAYNF/YHKM2QXXZHS7MS6DJUZXTGRXMIGWH7K5/PCXT6E5YCQO6SSVLT6UZPPGT7QKGXOUS.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+.site-content .sunday-wordmark h1,
+.sunday-stretch-type { font-family: 'Sunday Anton', Impact, sans-serif; font-weight: 400; }

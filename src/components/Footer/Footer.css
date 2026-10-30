@@ -1,48 +1,43 @@
-.sunday-footer {
-  --footer-gutter: clamp(20px, 4vw, 80px);
-  width: 100%;
-  padding: clamp(20px, 2vw, 40px) 0 clamp(32px, 3.5vw, 72px);
-  background: #000;
-  color: #fff;
-  font-family: var(--font-sans);
-  font-weight: 400;
+.sunday-footer { --footer-ink: #fff; --footer-gutter: clamp(20px, 3.8vw, 72px); background: #000; color: var(--footer-ink); padding: clamp(40px, 5vw, 80px) var(--footer-gutter) 28px; font-family: var(--font-sans); font-weight: 400; }
+.sunday-footer a { color: inherit; text-decoration: none; transition: opacity .2s ease; }
+.sunday-footer a:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
+.sunday-footer-kicker { display: flex; justify-content: space-between; max-width: 180px; font-size: 14px; line-height: 1.5; }
+.sunday-footer-kicker > span:last-child { font-size: 24px; }
+.sunday-footer-title { margin: 24px 0 clamp(48px, 6vw, 96px); max-width: 100%; font-size: clamp(44px, 11.5vw, 200px); line-height: .98; font-weight: 400; letter-spacing: -.065em; }
+.sunday-footer-title a { display: inline-block; }
+.sunday-footer-columns { display: grid; grid-template-columns: 1fr 1.1fr .8fr; gap: 48px; }
+.sunday-footer-column { min-width: 0; font-size: clamp(16px, 1.4vw, 22px); line-height: 1.3; }
+.sunday-footer-column h3 { margin: 0 0 32px; font-size: 12px; line-height: 1.5; font-weight: 400; text-transform: uppercase; }
+.sunday-footer-column p { margin: 0 0 16px; }
+.sunday-footer-column > a { display: block; width: fit-content; max-width: 100%; overflow-wrap: anywhere; }
+.sunday-footer-navigation { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+.sunday-footer-navigation a { width: fit-content; }
+.sunday-footer-bottom { display: flex; align-items: baseline; justify-content: space-between; gap: 16px 32px; margin-top: 24px; font-size: 11px; line-height: 1.6; text-transform: uppercase; }
+.sunday-footer-bottom p { margin: 0; }
+.sunday-footer-legal { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+@media (hover: hover) { .sunday-footer a:hover { opacity: .6; } }
+@media (max-width: 900px) {
+  .sunday-footer-columns { grid-template-columns: 1fr 1fr; gap: 40px 28px; }
+  .sunday-footer-column:last-child { grid-column: 1 / -1; }
+  .sunday-footer-navigation { display: flex; flex-wrap: wrap; gap: 8px 24px; }
 }
-.sunday-footer a { color: inherit; text-decoration: none; transition: opacity 180ms ease; }
-.sunday-footer a:focus-visible { outline: 2px solid #fff; outline-offset: 5px; border-radius: 1px; }
-.sunday-footer-top, .sunday-footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 20px 32px;
-  padding-inline: var(--footer-gutter);
-  font-size: clamp(14px, 1.1vw, 20px);
-  line-height: 1.6;
+@media (max-width: 540px) {
+  .sunday-footer-title { font-size: clamp(38px, 11.2vw, 60px); margin-top: 28px; letter-spacing: -.055em; line-height: 1.05; }
+  .sunday-footer-columns { grid-template-columns: 1fr; gap: 36px; }
+  .sunday-footer-column h3 { margin-bottom: 16px; }
+  .sunday-footer-bottom { flex-direction: column; gap: 14px; margin-top: 24px; }
 }
-.sunday-footer-top > *, .sunday-footer-bottom > * { min-width: 0; }
-.sunday-footer-navigation, .sunday-footer-contact, .sunday-footer-legal { display: flex; flex-wrap: wrap; align-items: baseline; }
-.sunday-footer-navigation { gap: 8px clamp(14px, 1.15vw, 24px); }
-.sunday-footer-contact { justify-content: flex-end; gap: 8px 24px; }
-.sunday-footer-contact a { overflow-wrap: anywhere; }
-.sunday-footer-contact a[href^="tel:"] { white-space: nowrap; }
-.sunday-footer-wordmark { display: block; width: calc(100% - 20px); margin: clamp(22px, 2.2vw, 40px) 10px 0; }
-.sunday-footer-wordmark > span { display: inline-block; white-space: nowrap; font-family: var(--font-sans); font-size: 9vw; font-weight: 400; line-height: 1.15; letter-spacing: -.035em; vertical-align: top; }
-.sunday-footer-bottom { margin-top: clamp(22px, 2.2vw, 40px); }
-.sunday-footer-copyright { margin: 0; }
-.sunday-footer-legal { justify-content: flex-end; gap: 8px 24px; }
-@media (hover: hover) and (pointer: fine) {
-  .sunday-footer a:hover { opacity: .72; }
-  .sunday-footer .sunday-footer-wordmark:hover { opacity: 1; }
-}
-@media (max-width: 1100px) {
-  .sunday-footer-top { flex-direction: column; gap: 16px; }
-  .sunday-footer-contact { justify-content: flex-start; }
-}
-@media (max-width: 600px) {
-  .sunday-footer-top, .sunday-footer-bottom { font-size: 13px; }
-  .sunday-footer-contact { flex-direction: column; gap: 6px; }
-  .sunday-footer-bottom { flex-direction: column; gap: 12px; }
-  .sunday-footer-legal { justify-content: flex-start; gap: 8px 20px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .sunday-footer a { transition: none; }
+@media (prefers-reduced-motion: reduce) { .sunday-footer a { transition: none; } }
+
+.sunday-footer-wordmark { display: block; width: calc(100% + 2 * var(--footer-gutter) - 20px); margin: clamp(48px, 6vw, 96px) calc(10px - var(--footer-gutter)) 0; }
+.sunday-footer-wordmark > span { display: inline-block; vertical-align: top; white-space: nowrap; font-family: var(--font-sans); font-size: 9vw; font-weight: 400; line-height: 1.2; letter-spacing: -.035em; }
+.sunday-footer .sunday-footer-wordmark:hover { opacity: 1; }
+.sunday-footer-navigation a { padding-block: 5px; }
+.sunday-footer-column > a { padding-block: 4px; }
+
+/* A single-line invitation and a stronger studio signature. */
+.sunday-footer-title { font-size: clamp(22px, 6.6vw, 120px); font-weight: 300; line-height: 1.1; letter-spacing: -.045em; white-space: nowrap; }
+.sunday-footer-wordmark > span { font-weight: 700; }
+@media (max-width: 540px) {
+  .sunday-footer-title { font-size: clamp(19px, 6.4vw, 35px); font-weight: 300; line-height: 1.15; letter-spacing: -.04em; }
 }
