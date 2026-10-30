@@ -103,7 +103,7 @@ export default function Services() {
     const context = gsap.context(() => {
       gsap.set(images, { autoAlpha: 0 })
       measure()
-      const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: self => { scrollLean = finePointer ? gsap.utils.clamp(-2, 2, self.getVelocity() / 1400) : 0; update() }, onRefresh: () => { measure(); update() } })
+      const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: self => { scrollLean = !reduced ? gsap.utils.clamp(-2, 2, self.getVelocity() / 1400) : 0; update() }, onRefresh: () => { measure(); update() } })
       const entry = reveal.current!
       gsap.set(entry, { autoAlpha: 0, scale: .96, y: 16 })
       const visibility = ScrollTrigger.create({
