@@ -1,40 +1,63 @@
-@font-face { font-family: 'Sunday Services Inter'; src: url('https://framerusercontent.com/assets/GrgcKwrN6d3Uz8EwcLHZxwEfC4.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face {
+  font-family: 'Sunday Services Inter';
+  src: url('https://framerusercontent.com/assets/GrgcKwrN6d3Uz8EwcLHZxwEfC4.woff2') format('woff2');
+  font-style: normal; font-weight: 400; font-display: swap;
+}
 body.sunday-scroll-theme { background: #000; --sunday-scroll-ink: #fff; }
 body.sunday-scroll-theme #root { position: relative; z-index: 1; }
 .sunday-page-backdrop { position: fixed; inset: 0; z-index: 0; background: #f7f7f7; opacity: 0; pointer-events: none; will-change: opacity; }
 body.sunday-scroll-theme .sunday-footer { background: transparent; color: var(--sunday-scroll-ink); --footer-ink: var(--sunday-scroll-ink); }
-.sunday-services-scroll { padding: 80px 48px 200px; background: transparent; color: var(--sunday-scroll-ink, #0f0e0e); font-family: 'Sunday Services Inter', var(--font-sans); font-weight: 400; }
+.sunday-services-scroll {
+  padding: clamp(220px, 18vw, 320px) 48px 240px;
+  overflow-x: clip; background: transparent; color: var(--sunday-scroll-ink, #0f0e0e);
+  font-family: 'Sunday Services Inter', var(--font-sans); font-weight: 400;
+}
 .sunday-services-container { max-width: 1704px; margin-inline: auto; }
-.sunday-services-container h2 { display: flex; align-items: center; justify-content: flex-end; height: 48px; gap: 4px; margin: 0; font: 400 28px/1.2 'Sunday Services Inter', sans-serif; letter-spacing: -.04em; }
-.sunday-services-container h2 span { font-size: 32px; }
 .sunday-services-stage { position: relative; }
-.sunday-service-visual { position: absolute; inset: 0 auto auto 0; width: 17.55%; aspect-ratio: 208 / 300; will-change: transform; pointer-events: none; }
-.sunday-service-visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 24px; opacity: 0; }
-.sunday-service-visual img:first-child { opacity: 1; }
-.sunday-services-list { list-style: none; margin: 0; padding: 0; }
+.sunday-services-list { list-style: none; width: 70%; margin: 0 0 0 30%; padding: 0; }
 .sunday-service-name { display: flex; justify-content: flex-end; height: 180px; opacity: .325; font-size: 180px; line-height: 1; letter-spacing: -.08em; white-space: nowrap; }
 .sunday-service-name > span { letter-spacing: inherit; }
 .sunday-service-letter { display: inline-block; white-space: pre; letter-spacing: inherit; }
-.sunday-services-note { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; margin: 280px 0 0 34.7%; }
-.sunday-services-note p { margin: 0; font-size: 22px; line-height: 1.15; text-align: right; }
-.sunday-services-note p:first-child { font-family: var(--font-sans); font-size: 11px; line-height: 1.4; text-align: left; text-transform: uppercase; }
+/* Scroll anchoring and pointer movement have independent owners. */
+.sunday-service-track { position: absolute; left: clamp(20px, 2vw, 36px); top: 0; bottom: -80px; width: 17.55%; pointer-events: none; }
+.sunday-service-anchor { position: sticky; top: 200px; width: 100%; aspect-ratio: 208 / 222; }
+.sunday-service-reveal { position: absolute; inset: 0; visibility: hidden; opacity: 0; transform-origin: center; }
+.sunday-service-visual { position: absolute; top: -50px; left: 0; width: 100%; aspect-ratio: 208 / 300; will-change: transform; }
+.sunday-service-visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 24px; opacity: 0; }
+.sunday-service-visual img:first-child { opacity: 1; }
+.sunday-services-note { display: grid; grid-template-columns: 30% minmax(0, 70%); margin-top: 280px; }
+.sunday-services-note p { margin: 0; }
+.sunday-services-note > p { padding-right: 24px; font: 400 11px/1.4 var(--font-sans); text-transform: uppercase; }
+.sunday-services-descriptions { min-width: 0; }
+.sunday-services-descriptions p { font-size: 28px; line-height: 1.3; text-align: right; text-wrap: pretty; }
+.sunday-services-descriptions p + p { margin-top: 4px; }
+@media (min-width: 1200px) and (max-width: 1350px) {
+  .sunday-service-name { font-size: 160px; height: 170px; }
+}
 @media (max-width: 1199px) {
-  .sunday-services-scroll { padding: 60px 20px 160px; }
-  .sunday-services-container h2 { height: 40px; font-size: 20px; }
-  .sunday-service-name { font-size: 60px; height: 60px; letter-spacing: -.07em; }
-  .sunday-service-visual { width: 25%; }
+  .sunday-services-scroll { padding: 190px 20px 180px; }
+  .sunday-service-name { font-size: 60px; height: 68px; letter-spacing: -.07em; }
+  .sunday-service-track { left: 12px; width: 25%; bottom: -60px; }
+  .sunday-service-anchor { top: 170px; }
+  .sunday-service-visual { top: -35px; }
   .sunday-service-visual img { border-radius: 16px; }
-  .sunday-services-note { margin-top: 180px; gap: 24px; }
-  .sunday-services-note p { font-size: 18px; }
+  .sunday-services-note { margin-top: 180px; }
+  .sunday-services-descriptions p { font-size: 22px; }
 }
 @media (max-width: 809px) {
-  .sunday-services-scroll { padding-top: 40px; padding-bottom: 120px; }
-  .sunday-services-container h2 { height: 32px; font-size: 16px; }
-  .sunday-services-container h2 span { font-size: 20px; }
-  .sunday-service-name { font-size: min(48px, 12.3077vw); height: min(48px, 12.3077vw); }
+  .sunday-services-scroll { padding-top: 160px; padding-bottom: 140px; }
+  .sunday-service-name { font-size: min(45px, 10.6vw); height: min(52px, 13.4vw); }
+  .sunday-service-track { left: 0; }
+  .sunday-service-anchor { top: 150px; }
+  .sunday-service-visual { top: -24px; }
   .sunday-service-visual img { border-radius: 12px; }
-  .sunday-services-note { margin: 140px 0 0; grid-template-columns: 1fr 1.4fr; gap: 20px; }
-  .sunday-services-note p { font-size: 16px; }
-  .sunday-services-note p:first-child { font-size: 9px; }
+  .sunday-services-note { margin-top: 140px; grid-template-columns: 1fr; gap: 24px; }
+  .sunday-services-note > p { padding: 0; font-size: 10px; }
+  .sunday-services-descriptions p { font-size: 16px; }
+}
+@media (max-height: 600px) and (min-width: 810px) {
+  .sunday-service-track { width: min(17.55%, calc((100svh - 150px) * .6933)); }
+  .sunday-service-anchor { top: 130px; }
+  .sunday-service-visual { top: -30px; }
 }
 @media (prefers-reduced-motion: reduce) { .sunday-service-visual { will-change: auto; } }

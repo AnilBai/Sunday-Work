@@ -7,11 +7,11 @@ import './Services.css'
 
 gsap.registerPlugin(ScrollTrigger)
 const services = [
-  { name: 'Art Direction', image: 'xvbmP2RETgW6oOPW5kTmPh6busg' },
-  { name: 'Production', image: 'BwCmxlMIwWfqxkz8nvxIQfKBgk' },
-  { name: 'Strategy', image: '4WNOPai8HNpbkzXGrHQZwYWmibA' },
-  { name: 'Rebranding', image: 'xYeTN1Bn52IZWANLkSiNFVPy0jY' },
-  { name: 'Design', image: '1QkHnDWCstFb6jXN6WFLV6yDZB0' },
+  { name: 'Brand', image: 'xvbmP2RETgW6oOPW5kTmPh6busg' },
+  { name: 'Product', image: 'BwCmxlMIwWfqxkz8nvxIQfKBgk' },
+  { name: 'Engineering', image: '4WNOPai8HNpbkzXGrHQZwYWmibA' },
+  { name: 'Growth', image: 'xYeTN1Bn52IZWANLkSiNFVPy0jY' },
+  { name: 'Intelligence', image: '1QkHnDWCstFb6jXN6WFLV6yDZB0' },
 ]
 
 export default function Services() {
@@ -19,6 +19,7 @@ export default function Services() {
   const backdrop = useRef<HTMLDivElement>(null)
   const visual = useRef<HTMLDivElement>(null)
   const list = useRef<HTMLUListElement>(null)
+  const reveal = useRef<HTMLDivElement>(null)
   useServiceScene(section, backdrop)
 
   useLayoutEffect(() => {
@@ -26,10 +27,28 @@ export default function Services() {
     const rows = Array.from(items.querySelectorAll<HTMLElement>('.sunday-service-name'))
     const images = Array.from(image.querySelectorAll<HTMLImageElement>('img'))
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
-    const pointer = { x: 0, y: 0 }
-    const current = { y: 0, x: 0, tiltX: 0, tiltY: 0 }
-    let targetY = 0, active = -1, disposed = false
-    const setImage = gsap.quickSetter(image, 'css')
+    const finePointer = !reduced && matchMedia('(hover: hover) and (pointer: fine)').matches
+    const pointer = { x: 0, y: 0, clientX: null as number | null }
+    const current = { x: 0, driftY: 0, tiltX: 0, tiltY: 0, roll: 0 }
+    let active = -1, disposed = false, sceneActive = false
+    const geometry = { top: 0, cardCenter: 0, cardWidth: 1, pointerRange: 0, centers: [] as number[] }
+    let scrollLean = 0
+    const measure = () => {
+      const bounds = items.getBoundingClientRect()
+      geometry.top = bounds.top + window.scrollY
+      const rail = root.querySelector<HTMLElement>('.sunday-service-track')!.getBoundingClientRect()
+      geometry.cardCenter = rail.left + rail.width / 2
+      geometry.cardWidth = rail.width
+      const textLeft = Math.min(...rows.map(row => row.firstElementChild!.getBoundingClientRect().left))
+      const gap = innerWidth >= 1200 ? Math.min(72, innerWidth * .04) : 24
+      // Reserve breathing room even at the furthest right cursor position.
+      geometry.pointerRange = Math.max(0, Math.min(innerWidth * .3, textLeft - gap - rail.width / 2 - 16))
+      if (pointer.clientX !== null) {
+        pointer.x = gsap.utils.clamp(0, geometry.pointerRange, pointer.clientX) - geometry.cardCenter
+      }
+      current.x = gsap.utils.clamp(-geometry.cardCenter, geometry.pointerRange - geometry.cardCenter, current.x)
+      geometry.centers = rows.map(row => row.getBoundingClientRect().top - bounds.top + row.offsetHeight / 2)
+    }
     const setActive = (index: number) => {
       if (index === active) return
       active = index
@@ -40,7 +59,7 @@ export default function Services() {
       images.forEach((img, i) => {
         if (i === index) {
           gsap.set(img, { zIndex: 2 })
-          gsap.fromTo(img, { autoAlpha: 0, scale: .98 }, { autoAlpha: 1, scale: 1, duration: reduced ? 0 : .55, ease: 'power2.out', overwrite: true })
+          gsap.to(img, { autoAlpha: 1, duration: reduced ? 0 : .55, ease: 'power2.out', overwrite: true })
         } else {
           gsap.set(img, { zIndex: 1 })
           gsap.to(img, { autoAlpha: 0, duration: reduced ? 0 : .4, overwrite: true })
@@ -50,49 +69,69 @@ export default function Services() {
     const update = () => {
       const center = innerHeight / 2
       let nearest = 0, distance = Infinity
-      rows.forEach((row, i) => {
-        const r = row.getBoundingClientRect()
-        const d = Math.abs(r.top + r.height / 2 - center)
+      geometry.centers.forEach((rowCenter, i) => {
+        const d = Math.abs(geometry.top + rowCenter - window.scrollY - center)
         if (d < distance) { nearest = i; distance = d }
       })
       setActive(nearest)
-      const row = rows[nearest].getBoundingClientRect()
-      const stage = items.getBoundingClientRect()
-      targetY = row.top - stage.top + row.height / 2 - image.offsetHeight / 2 - (innerWidth >= 1200 ? 100 : 40)
     }
     const move = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse' || reduced) return
-      const bounds = root.getBoundingClientRect()
-      pointer.x = gsap.utils.clamp(-1, 1, (event.clientX - bounds.left) / bounds.width * 2 - 1)
+      if (event.pointerType !== 'mouse' || !finePointer) return
+      pointer.clientX = event.clientX
+      // A one-to-one horizontal follower across the left 30% of the viewport.
+      // At x=0 the card's centre reaches the edge, allowing half the image off-screen.
+      pointer.x = gsap.utils.clamp(0, geometry.pointerRange, event.clientX) - geometry.cardCenter
       pointer.y = gsap.utils.clamp(-1, 1, event.clientY / innerHeight * 2 - 1)
     }
-    const leave = () => { pointer.x = 0; pointer.y = 0 }
     const tick = (_time: number, delta: number) => {
-      const factor = 1 - Math.pow(.87, Math.min(delta, 64) / 16.667)
-      current.y += (targetY - current.y) * factor
-      current.x += (pointer.x * 36 - current.x) * factor * .5
-      current.tiltX += (-pointer.y * 6 - current.tiltX) * factor * .5
-      current.tiltY += (pointer.x * 10 - current.tiltY) * factor * .5
-      setImage({ x: current.x, y: reduced ? targetY : current.y, rotationX: current.tiltX, rotationY: current.tiltY, transformPerspective: 900 })
+      if (!sceneActive || document.hidden) return
+      // Native sticky positioning owns scrolling. Only the inner card floats.
+      const floatEase = 1 - Math.exp(-Math.min(delta, 64) / 220)
+      const px = finePointer ? pointer.x : 0, py = finePointer ? pointer.y : 0
+      const nx = gsap.utils.clamp(-1, 1, px / geometry.cardWidth)
+      const horizontalEase = 1 - Math.exp(-Math.min(delta, 64) / 380)
+      current.x += (px - current.x) * horizontalEase
+      current.driftY += (py * 24 - current.driftY) * floatEase
+      current.tiltX += (-py * 5 - current.tiltX) * floatEase
+      current.tiltY += (nx * 8 - current.tiltY) * floatEase
+      current.roll += (nx * 2.2 + scrollLean - current.roll) * floatEase
+      scrollLean *= Math.exp(-Math.min(delta, 64) / 180)
+      const bob = finePointer ? Math.sin(_time * 1.15) * 3 : 0
+      const floatY = reduced ? 0 : current.driftY + bob
+      image.style.transform = `perspective(1100px) translate3d(${current.x}px, ${floatY}px, 0) rotateX(${current.tiltX}deg) rotateY(${current.tiltY}deg) rotateZ(${current.roll}deg)`
     }
     const context = gsap.context(() => {
       gsap.set(images, { autoAlpha: 0 })
-      const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: update, onRefresh: update })
+      measure()
+      const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: self => { scrollLean = finePointer ? gsap.utils.clamp(-2, 2, self.getVelocity() / 1400) : 0; update() }, onRefresh: () => { measure(); update() } })
+      const entry = reveal.current!
+      gsap.set(entry, { autoAlpha: 0, scale: .96, y: 16 })
+      const visibility = ScrollTrigger.create({
+        trigger: items, start: 'top 80%', end: 'bottom 15%',
+        onToggle: self => {
+          sceneActive = self.isActive
+          entry.dataset.visible = String(self.isActive)
+          gsap.to(entry, { autoAlpha: self.isActive ? 1 : 0, scale: self.isActive ? 1 : .96, y: self.isActive ? 0 : 16, duration: reduced ? 0 : .55, ease: 'power2.out', overwrite: true })
+        },
+      })
+      sceneActive = visibility.isActive
+      entry.dataset.visible = String(visibility.isActive)
+      gsap.set(entry, { autoAlpha: visibility.isActive ? 1 : 0, scale: visibility.isActive ? 1 : .96, y: visibility.isActive ? 0 : 16 })
       update()
-      current.y = targetY
       tick(0, 16.667)
-      const resize = new ResizeObserver(() => { if (!disposed) update() })
+      const resize = new ResizeObserver(() => { if (!disposed) { measure(); update() } })
       resize.observe(items)
       void document.fonts.ready.then(() => { if (!disposed) { update(); ScrollTrigger.refresh() } })
       gsap.ticker.add(tick)
       root.addEventListener('pointermove', move)
-      root.addEventListener('pointerleave', leave)
       return () => {
         resize.disconnect()
         trigger.kill()
+        visibility.kill()
+        gsap.killTweensOf(entry)
         gsap.ticker.remove(tick)
+        image.style.removeProperty('transform')
         root.removeEventListener('pointermove', move)
-        root.removeEventListener('pointerleave', leave)
       }
     }, root)
     return () => { disposed = true; context.revert(); gsap.killTweensOf([...rows, ...images]) }
@@ -100,20 +139,25 @@ export default function Services() {
 
   return <>
     {createPortal(<div ref={backdrop} className="sunday-page-backdrop" aria-hidden="true" />, document.body)}
-    <section ref={section} className="sunday-services-scroll" aria-labelledby="services-heading">
+    <section ref={section} className="sunday-services-scroll" aria-label="Our services">
       <div className="sunday-services-container">
-        <h2 id="services-heading">What we do <span aria-hidden="true">↴</span></h2>
         <div className="sunday-services-stage">
-          <div ref={visual} className="sunday-service-visual" aria-hidden="true">
+          <div className="sunday-service-track" aria-hidden="true"><div className="sunday-service-anchor"><div ref={reveal} className="sunday-service-reveal"><div ref={visual} className="sunday-service-visual">
             {services.map(({ name, image }) => <img key={name} src={`https://framerusercontent.com/images/${image}.jpg?width=684`} alt="" width="456" height="656" decoding="async" />)}
-          </div>
+          </div></div></div></div>
           <ul ref={list} className="sunday-services-list">
             {services.map(({ name }) => <li className="sunday-service-name" key={name}><span aria-label={name}>{Array.from(name).map((letter, index) => <span aria-hidden="true" className="sunday-service-letter" key={index}>{letter}</span>)}</span></li>)}
           </ul>
         </div>
         <div className="sunday-services-note">
           <p>Independent thinking.<br />Shared ambition.</p>
-          <p>Brand / Product / Development / Growth / Intelligence</p>
+          <div className="sunday-services-descriptions">
+            <p>Brand Strategy / Identity / Visual Systems</p>
+            <p>Product Design / UI/UX / Design Systems</p>
+            <p>Web / Applications / Software Development</p>
+            <p>SEO / Digital Strategy / Conversion</p>
+            <p>AI / Automation / Intelligent Workflows</p>
+          </div>
         </div>
       </div>
     </section>
