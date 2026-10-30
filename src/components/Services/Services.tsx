@@ -30,9 +30,9 @@ export default function Services() {
     const touch = matchMedia('(pointer: coarse)').matches
     const finePointer = !reduced && matchMedia('(hover: hover) and (pointer: fine)').matches
     const pointer = { x: 0, y: 0, clientX: null as number | null }
-    const current = { x: 0, driftY: 0, tiltX: 0, tiltY: 0, roll: 0 }
+    const current = { x: 0, driftY: 0, tiltX: 0, tiltY: 0, roll: 0, follow: 0 }
     let active = -1, disposed = false, sceneActive = false
-    const geometry = { top: 0, cardCenter: 0, cardWidth: 1, pointerRange: 0, centers: [] as number[] }
+    const geometry = { top: 0, cardCenter: 0, cardWidth: 1, pointerRange: 0, travel: 0, anchor: 0, centers: [] as number[] }
     let scrollLean = 0
     let targetLean = 0
     // Decode each layer before its first crossfade, avoiding a first-use hitch.
@@ -44,6 +44,8 @@ export default function Services() {
       // rather than several short rows later at a fixed 150px viewport offset.
       root.style.setProperty('--service-touch-anchor', `${Math.max(120, innerHeight / 2 - rows[0].offsetHeight / 2)}px`)
       const rail = root.querySelector<HTMLElement>('.sunday-service-track')!.getBoundingClientRect()
+      geometry.anchor = Math.max(120, innerHeight / 2 - rows[0].offsetHeight / 2)
+      geometry.travel = Math.max(0, rail.height - root.querySelector<HTMLElement>('.sunday-service-anchor')!.offsetHeight)
       geometry.cardCenter = rail.left + rail.width / 2
       geometry.cardWidth = rail.width
       const textLeft = Math.min(...rows.map(row => row.firstElementChild!.getBoundingClientRect().left))
@@ -104,7 +106,12 @@ export default function Services() {
       current.roll += (nx * 1.8 + scrollLean - current.roll) * floatEase
       targetLean *= Math.exp(-Math.min(delta, 64) / 240)
       const bob = finePointer ? Math.sin(_time * .9) * 2 : 0
-      const floatY = reduced ? 0 : current.driftY + bob
+      // Ease only the small mobile follow offset; native sticky remains the track.
+      const mobile = touch || innerWidth <= 809
+      const travel = mobile && !reduced ? gsap.utils.clamp(0, geometry.travel, window.scrollY + geometry.anchor - geometry.top) : 0
+      current.follow += (travel - current.follow) * (1 - Math.exp(-Math.min(delta, 64) / 180))
+      current.follow = gsap.utils.clamp(travel - 18, travel + 18, current.follow)
+      const floatY = reduced ? 0 : current.driftY + bob + (mobile ? current.follow - travel : 0)
       image.style.transform = `perspective(1100px) translate3d(${current.x}px, ${floatY}px, 0) rotateX(${current.tiltX}deg) rotateY(${current.tiltY}deg) rotateZ(${current.roll}deg)`
     }
     const context = gsap.context(() => {
@@ -148,6 +155,7 @@ export default function Services() {
     {createPortal(<div ref={backdrop} className="sunday-page-backdrop" aria-hidden="true" />, document.body)}
     <section ref={section} className="sunday-services-scroll" aria-label="Our services">
       <div className="sunday-services-container">
+        <p className="sunday-services-intro">Thoughtful by design.<br />Built for what’s next.</p>
         <div className="sunday-services-stage">
           <div className="sunday-service-track" aria-hidden="true"><div className="sunday-service-anchor"><div ref={reveal} className="sunday-service-reveal"><div ref={visual} className="sunday-service-visual">
             {services.map(({ name, image }) => <img key={name} src={`https://framerusercontent.com/images/${image}.jpg?width=684`} alt="" width="456" height="656" decoding="async" />)}
@@ -157,7 +165,7 @@ export default function Services() {
           </ul>
         </div>
         <div className="sunday-services-note">
-          <p>Independent thinking.<br />Shared ambition.</p>
+          <p>Purpose in every detail.<br />Possibility in every direction.</p>
           <div className="sunday-services-descriptions">
             <p>Brand Strategy / Identity / Visual Systems</p>
             <p>Product Design / UI/UX / Design Systems</p>

@@ -25,7 +25,7 @@ function StretchWordmark() {
     let positions: { x: number; center: number; sourceCenter: number; halfWidth: number }[] = []
     const springs = Array.from({ length: 6 }, () => ({ value: 0, velocity: 0 }))
     const pointer = { x: -1e6, y: -1e6, time: -1e6, pressed: false }
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduced = true // Keep Sunday lettering completely static.
     const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n))
     const falloff = (distance: number, radius: number) => {
       const t = clamp(1 - distance / Math.max(1, radius), 0, 1)
@@ -99,7 +99,7 @@ function StretchWordmark() {
         const idle = .12 * (.5 + .5 * Math.sin(now / 620 - index * .75)) * (1 - influence)
         const target = now < pressedUntil ? -.42 * (pull + .25) : Math.max(pull, idle)
         if (pressed) spring.velocity -= 9 * (pull + .2)
-        if (reduced) { spring.value = 0; spring.velocity = 0 }
+        if (reduced || window.innerWidth <= 760 || box.width < width * .99) { spring.value = 0; spring.velocity = 0 }
         else {
           spring.velocity += (170 * (target - spring.value) - 14.4 * spring.velocity) * dt
           spring.value = clamp(spring.value + spring.velocity * dt, -.45, 1.6)
@@ -172,6 +172,7 @@ export default function Homepage() {
       const compactScale = () => {
         const size = glyphSize()
         const viewport = section.clientWidth
+        if (viewport <= 760) return ((viewport - 40) * .68) / size.width
         const targetHeight = viewport <= 360 ? 26 : viewport <= 900 ? 30 : viewport >= 1600 ? 40 : 34
         const gutter = viewport <= 900 ? 20 : viewport >= 1600 ? 48 : 36
         const buttonWidth = viewport <= 900 ? 44 : 56
@@ -181,9 +182,11 @@ export default function Homepage() {
       gsap.fromTo(logo, {
         y: () => section.querySelector<HTMLElement>('.sunday-title-space')!.offsetTop,
         scale: heroScale,
+        x: 0,
       }, {
         y: () => headerCenter() - (logoHeight() - glyphSize().height / 2) * compactScale(),
         scale: compactScale,
+        x: () => section.clientWidth <= 760 ? -(section.clientWidth - 40) * .16 : 0,
         ease: 'none',
         onUpdate: () => {
           syncSocials()
@@ -192,7 +195,7 @@ export default function Homepage() {
         },
         scrollTrigger: {
           trigger: section, start: 'top top', end: () => `+=${section.offsetHeight * .85}`,
-          scrub: window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse)').matches ? true : .55,
+          scrub: true,
           invalidateOnRefresh: true,
           onRefresh: syncSocials,
         },

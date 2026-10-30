@@ -46,11 +46,11 @@ export default function Footer({ privacyUrl, termsUrl }: FooterProps) {
     : <span key={label}>{label}</span>
 
   return <footer className="sunday-footer" aria-labelledby="footer-title">
+    <p className="sunday-footer-intro">Independent thinking.<br />Shared ambition.</p>
     <h2 id="footer-title" className="sunday-footer-title">Have a project? <a href="mailto:hello@sundayandcompany.com">Let’s talk.</a></h2>
     <div className="sunday-footer-columns">
       <div className="sunday-footer-column">
         <h3>Sunday &amp; Company</h3>
-        <p>Independent thinking.<br />Shared ambition.</p>
         <p>Brand / Product / Development<br />Growth / Intelligence</p>
       </div>
       <div className="sunday-footer-column">

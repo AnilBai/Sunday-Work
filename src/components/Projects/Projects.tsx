@@ -54,6 +54,7 @@ export default function Projects() {
     <div className="projects-inner">
       <header className="projects-heading">
         <h2 id="projects-title">Our Projects<span className="projects-count" aria-label="5 projects">(05)</span></h2>
+        <p className="projects-intro">Ideas made tangible.<br />Work made to matter.</p>
       </header>
       <div className="projects-grid">
         {[[0, 2], [2, 3], [3, 5]].map(([start, end]) => <div className={`project-row${end - start === 1 ? ' project-row-featured' : ''}`} key={start}>

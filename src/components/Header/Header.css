@@ -93,3 +93,16 @@
 .site-header .header-menu-symbol svg { stroke: #fff; }
 .site-header .header-socials, .site-header .header-menu-button { position: relative; z-index: 2; }
 
+
+/* Mobile header: 78% signature, 5% space, 17% menu. */
+@media (max-width: 760px) {
+  body:has(.sunday-hero) .site-header { height: calc(26vw + 32px); padding: 0 20px; align-items: center; justify-content: flex-end; }
+  body:has(.sunday-hero) .site-header > .header-socials { display: none; }
+  body:has(.sunday-hero) .site-header > .header-menu-button { position: relative; margin: 0; width: calc((100vw - 40px) * .17); height: calc((100vw - 40px) * .17); background: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+@media (max-width: 760px) {
+  body:has(.sunday-hero) .site-header > .header-menu-button .header-menu-symbol,
+  body:has(.sunday-hero) .site-header > .header-menu-button svg { width: 100%; height: 100%; }
+  body:has(.sunday-hero) .site-header > .header-menu-button::after { content: ''; position: absolute; width: max(100%, 44px); height: max(100%, 44px); left: 50%; top: 50%; transform: translate(-50%, -50%); }
+}
