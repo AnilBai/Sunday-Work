@@ -69,3 +69,6 @@
 @media (max-width: 809px) {
   .sunday-footer-intro { font-size: 14px; margin-bottom: 24px; }
 }
+
+/* Consistent footer detail type across screen sizes. */
+.sunday-footer-column { font-size: 16px; }

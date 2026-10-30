@@ -144,7 +144,7 @@ export default function Homepage() {
     const syncSocials = () => {
       if (!header || !socials) return
       const brandRect = (title.querySelector('svg g') ?? title).getBoundingClientRect()
-      const docked = logo.getBoundingClientRect().width < window.innerWidth * .5
+      const docked = brandRect.top < header.getBoundingClientRect().bottom && brandRect.bottom > 0
       const socialRight = socials.offsetLeft + socials.offsetWidth
       const overlaps = docked && brandRect.left < socialRight + 16
       const opacity = overlaps ? 0 : 1
@@ -172,7 +172,7 @@ export default function Homepage() {
       const compactScale = () => {
         const size = glyphSize()
         const viewport = section.clientWidth
-        if (viewport <= 760) return ((viewport - 40) * .68) / size.width
+        if (viewport <= 760) return ((viewport - 40) * .55) / size.width
         const targetHeight = viewport <= 360 ? 26 : viewport <= 900 ? 30 : viewport >= 1600 ? 40 : 34
         const gutter = viewport <= 900 ? 20 : viewport >= 1600 ? 48 : 36
         const buttonWidth = viewport <= 900 ? 44 : 56
@@ -186,7 +186,7 @@ export default function Homepage() {
       }, {
         y: () => headerCenter() - (logoHeight() - glyphSize().height / 2) * compactScale(),
         scale: compactScale,
-        x: () => section.clientWidth <= 760 ? -(section.clientWidth - 40) * .16 : 0,
+        x: () => section.clientWidth <= 760 ? -(section.clientWidth - 40) * .225 : 0,
         ease: 'none',
         onUpdate: () => {
           syncSocials()
