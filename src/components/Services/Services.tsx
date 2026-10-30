@@ -27,6 +27,7 @@ export default function Services() {
     const rows = Array.from(items.querySelectorAll<HTMLElement>('.sunday-service-name'))
     const images = Array.from(image.querySelectorAll<HTMLImageElement>('img'))
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+    const touch = matchMedia('(pointer: coarse)').matches
     const finePointer = !reduced && matchMedia('(hover: hover) and (pointer: fine)').matches
     const pointer = { x: 0, y: 0, clientX: null as number | null }
     const current = { x: 0, driftY: 0, tiltX: 0, tiltY: 0, roll: 0 }
@@ -36,6 +37,9 @@ export default function Services() {
     const measure = () => {
       const bounds = items.getBoundingClientRect()
       geometry.top = bounds.top + window.scrollY
+      // Engage the mobile sticky rail as the first row reaches the activation line,
+      // rather than several short rows later at a fixed 150px viewport offset.
+      root.style.setProperty('--service-touch-anchor', `${Math.max(120, innerHeight / 2 - rows[0].offsetHeight / 2)}px`)
       const rail = root.querySelector<HTMLElement>('.sunday-service-track')!.getBoundingClientRect()
       geometry.cardCenter = rail.left + rail.width / 2
       geometry.cardWidth = rail.width
@@ -54,15 +58,15 @@ export default function Services() {
       active = index
       rows.forEach((row, i) => {
         row.dataset.active = String(i === index)
-        gsap.to(row, { opacity: i === index ? 1 : .325, duration: reduced ? 0 : .35, ease: 'power2.out', overwrite: true })
+        gsap.to(row, { opacity: i === index ? 1 : .325, duration: reduced ? 0 : touch ? .1 : .35, ease: 'power2.out', overwrite: true })
       })
       images.forEach((img, i) => {
         if (i === index) {
           gsap.set(img, { zIndex: 2 })
-          gsap.to(img, { autoAlpha: 1, duration: reduced ? 0 : .55, ease: 'power2.out', overwrite: true })
+          gsap.to(img, { autoAlpha: 1, duration: reduced ? 0 : touch ? .18 : .55, ease: 'power2.out', overwrite: true })
         } else {
           gsap.set(img, { zIndex: 1 })
-          gsap.to(img, { autoAlpha: 0, duration: reduced ? 0 : .4, overwrite: true })
+          gsap.to(img, { autoAlpha: 0, duration: reduced ? 0 : touch ? .15 : .4, overwrite: true })
         }
       })
     }
@@ -111,7 +115,7 @@ export default function Services() {
         onToggle: self => {
           sceneActive = self.isActive
           entry.dataset.visible = String(self.isActive)
-          gsap.to(entry, { autoAlpha: self.isActive ? 1 : 0, scale: self.isActive ? 1 : .96, y: self.isActive ? 0 : 16, duration: reduced ? 0 : .55, ease: 'power2.out', overwrite: true })
+          gsap.to(entry, { autoAlpha: self.isActive ? 1 : 0, scale: self.isActive ? 1 : .96, y: self.isActive ? 0 : 16, duration: reduced ? 0 : touch ? .18 : .55, ease: 'power2.out', overwrite: true })
         },
       })
       sceneActive = visibility.isActive
@@ -134,7 +138,7 @@ export default function Services() {
         root.removeEventListener('pointermove', move)
       }
     }, root)
-    return () => { disposed = true; context.revert(); gsap.killTweensOf([...rows, ...images]) }
+    return () => { disposed = true; context.revert(); root.style.removeProperty('--service-touch-anchor'); gsap.killTweensOf([...rows, ...images]) }
   }, [])
 
   return <>

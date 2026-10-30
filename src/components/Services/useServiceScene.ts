@@ -10,6 +10,7 @@ export function useServiceScene(section: RefObject<HTMLElement | null>, backdrop
     if (!root || !layer) return
     document.body.classList.add('sunday-scroll-theme')
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+    const touch = matchMedia('(pointer: coarse)').matches
     const theme = { light: 0 }
     const paint = () => {
       layer.style.opacity = String(theme.light)
@@ -20,7 +21,9 @@ export function useServiceScene(section: RefObject<HTMLElement | null>, backdrop
       const box = root.getBoundingClientRect()
       const enter = gsap.utils.clamp(0, 1, (innerHeight * .9 - box.top) / (innerHeight * .5))
       const leave = gsap.utils.clamp(0, 1, (box.bottom - innerHeight * .45) / (innerHeight * .5))
-      fade(Math.min(enter, leave))
+      const value = Math.min(enter, leave)
+      if (touch || reduced) { theme.light = value; paint() }
+      else fade(value)
     }
     const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: update, onRefresh: update })
     update()

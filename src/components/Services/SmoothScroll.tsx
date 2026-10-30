@@ -27,9 +27,18 @@ export default function SmoothScroll() {
       lerp: .085, smoothWheel: true, syncTouch: false, anchors: true,
       prevent: node => !!node.closest('dialog'),
     }) : null
-    const tick = (time: number) => lenis?.raf(time * 1000)
+    let lastScroll = window.scrollY
+    const tick = (time: number) => {
+      lenis?.raf(time * 1000)
+      // Mobile Safari can scroll on the compositor before delivering scroll events.
+      // Read its native position on the same ticker that paints GSAP animations.
+      if (touch && window.scrollY !== lastScroll) {
+        lastScroll = window.scrollY
+        update()
+      }
+    }
     lenis?.on('scroll', update)
-    if (lenis) gsap.ticker.add(tick)
+    if (lenis || touch) gsap.ticker.add(tick)
     ScrollTrigger.refresh()
     return () => {
       cancelAnimationFrame(frame)
@@ -37,7 +46,8 @@ export default function SmoothScroll() {
       window.removeEventListener('touchmove', schedule)
       window.removeEventListener('touchend', schedule)
       window.removeEventListener('orientationchange', refresh)
-      if (lenis) { gsap.ticker.remove(tick); lenis.off('scroll', update); lenis.destroy() }
+      gsap.ticker.remove(tick)
+      if (lenis) { lenis.off('scroll', update); lenis.destroy() }
     }
   }, [])
   return null

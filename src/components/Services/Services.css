@@ -48,7 +48,7 @@ body.sunday-scroll-theme .sunday-footer { background: transparent; color: var(--
   .sunday-services-scroll { padding-top: 160px; padding-bottom: 140px; }
   .sunday-service-name { font-size: min(45px, 10.6vw); height: min(52px, 13.4vw); }
   .sunday-service-track { left: 0; }
-  .sunday-service-anchor { top: 150px; }
+  .sunday-service-anchor { top: var(--service-touch-anchor, calc(50svh - 26px)); }
   .sunday-service-visual { top: -24px; }
   .sunday-service-visual img { border-radius: 12px; }
   .sunday-services-note { margin-top: 140px; grid-template-columns: 1fr; gap: 24px; }
@@ -61,3 +61,7 @@ body.sunday-scroll-theme .sunday-footer { background: transparent; color: var(--
   .sunday-service-visual { top: -30px; }
 }
 @media (prefers-reduced-motion: reduce) { .sunday-service-visual { will-change: auto; } }
+
+@media (pointer: coarse) {
+  .sunday-service-anchor { top: var(--service-touch-anchor, calc(50svh - 26px)); }
+}

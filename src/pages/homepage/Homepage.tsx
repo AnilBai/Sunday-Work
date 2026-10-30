@@ -191,7 +191,7 @@ export default function Homepage() {
         },
         scrollTrigger: {
           trigger: section, start: 'top top', end: () => `+=${section.offsetHeight * .85}`,
-          scrub: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? true : .55,
+          scrub: window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse)').matches ? true : .55,
           invalidateOnRefresh: true,
           onRefresh: syncSocials,
         },
