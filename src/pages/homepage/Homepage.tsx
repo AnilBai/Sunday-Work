@@ -5,6 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import './Homepage.css'
 import Services from '../../components/Services/Services'
+import Projects from '../../components/Projects/Projects'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -232,7 +233,10 @@ export default function Homepage() {
       <div className="sunday-title-space" aria-hidden="true" />
       <div className="sunday-hero-bottom">
         <p>Hello! We’re a small, cheerful creative studio bringing ideas to life through branding, design and technology. We make things that feel as good as a slow Sunday morning — thoughtful, effortless and full of little details.</p>
-        <Link className="sunday-hero-link" to="/work">Explore our work <ArrowUpRight aria-hidden="true" /></Link>
+        <a className="sunday-hero-link" href="#projects" onClick={event => {
+          event.preventDefault()
+          document.getElementById('projects')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })
+        }}>Explore our work <ArrowUpRight aria-hidden="true" /></a>
       </div>
     </section>
     <div ref={wordmark} className="sunday-wordmark">
@@ -244,6 +248,7 @@ export default function Homepage() {
       <button aria-label="Close showreel" onClick={() => reelDialog.current?.close()}>Close ×</button>
       {showReel && <video src={reel} controls autoPlay playsInline />}
     </dialog>
+    <Projects />
     <Services />
   </main>
 }

@@ -67,7 +67,7 @@ export default function Footer({ privacyUrl, termsUrl }: FooterProps) {
     </div>
     <Link className="sunday-footer-wordmark" to="/" aria-label="Sunday & Company homepage" onClick={() => {
       window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })
-    }}><span ref={wordmark}>Sunday &amp; Company</span></Link>
+    }}><span ref={wordmark}>SUNDAY &amp; COMPANY</span></Link>
     <div className="sunday-footer-bottom">
       <p>© Copyrights Sunday &amp; Company</p>
       <div className="sunday-footer-legal" aria-label="Legal information">{legal.map(renderLink)}</div>

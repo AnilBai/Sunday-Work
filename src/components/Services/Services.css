@@ -46,7 +46,7 @@ body.sunday-scroll-theme .sunday-footer { background: transparent; color: var(--
 }
 @media (max-width: 809px) {
   .sunday-services-scroll { padding-top: 160px; padding-bottom: 140px; }
-  .sunday-service-name { font-size: clamp(32px, 10.6vw, 80px); height: clamp(72px, 18vw, 100px); }
+  .sunday-service-name { font-size: min(48px, 12.3vw); height: min(48px, 12.3vw); }
   .sunday-service-track { left: 0; }
   .sunday-service-anchor { top: var(--service-touch-anchor, calc(50svh - 26px)); }
   .sunday-service-visual { top: -24px; }

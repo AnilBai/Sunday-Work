@@ -34,6 +34,9 @@ export default function Services() {
     let active = -1, disposed = false, sceneActive = false
     const geometry = { top: 0, cardCenter: 0, cardWidth: 1, pointerRange: 0, centers: [] as number[] }
     let scrollLean = 0
+    let targetLean = 0
+    // Decode each layer before its first crossfade, avoiding a first-use hitch.
+    images.forEach(img => { void img.decode().catch(() => {}) })
     const measure = () => {
       const bounds = items.getBoundingClientRect()
       geometry.top = bounds.top + window.scrollY
@@ -63,7 +66,8 @@ export default function Services() {
       const upper = Math.min(lower + 1, rows.length - 1)
       const span = geometry.centers[upper] - geometry.centers[lower]
       const progress = span ? gsap.utils.clamp(0, 1, (position - geometry.centers[lower]) / span) : 0
-      const blend = progress * progress * (3 - 2 * progress)
+      // Zero acceleration at either end keeps reversals and slow scrolling gentle.
+      const blend = progress ** 3 * (progress * (progress * 6 - 15) + 10)
       const nearest = progress < .5 ? lower : upper
       if (nearest !== active) {
         active = nearest
@@ -96,16 +100,17 @@ export default function Services() {
       current.driftY += (py * 24 - current.driftY) * floatEase
       current.tiltX += (-py * 5 - current.tiltX) * floatEase
       current.tiltY += (nx * 8 - current.tiltY) * floatEase
-      current.roll += (nx * 2.2 + scrollLean - current.roll) * floatEase
-      scrollLean *= Math.exp(-Math.min(delta, 64) / 180)
-      const bob = finePointer ? Math.sin(_time * 1.15) * 3 : 0
+      scrollLean += (targetLean - scrollLean) * floatEase
+      current.roll += (nx * 1.8 + scrollLean - current.roll) * floatEase
+      targetLean *= Math.exp(-Math.min(delta, 64) / 240)
+      const bob = finePointer ? Math.sin(_time * .9) * 2 : 0
       const floatY = reduced ? 0 : current.driftY + bob
       image.style.transform = `perspective(1100px) translate3d(${current.x}px, ${floatY}px, 0) rotateX(${current.tiltX}deg) rotateY(${current.tiltY}deg) rotateZ(${current.roll}deg)`
     }
     const context = gsap.context(() => {
       gsap.set(images, { opacity: 0, visibility: 'visible' })
       measure()
-      const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: self => { scrollLean = !reduced ? gsap.utils.clamp(-2, 2, self.getVelocity() / 1400) : 0; update() }, onRefresh: () => { measure(); update() } })
+      const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: self => { targetLean = !reduced ? gsap.utils.clamp(touch ? -.65 : -1.5, touch ? .65 : 1.5, self.getVelocity() / 1800) : 0; update() }, onRefresh: () => { measure(); update() } })
       const entry = reveal.current!
       gsap.set(entry, { autoAlpha: 0, scale: .96, y: 16 })
       const visibility = ScrollTrigger.create({
