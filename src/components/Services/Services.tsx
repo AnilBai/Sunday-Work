@@ -53,31 +53,29 @@ export default function Services() {
       current.x = gsap.utils.clamp(-geometry.cardCenter, geometry.pointerRange - geometry.cardCenter, current.x)
       geometry.centers = rows.map(row => row.getBoundingClientRect().top - bounds.top + row.offsetHeight / 2)
     }
-    const setActive = (index: number) => {
-      if (index === active) return
-      active = index
-      rows.forEach((row, i) => {
-        row.dataset.active = String(i === index)
-        gsap.to(row, { opacity: i === index ? 1 : .325, duration: reduced ? 0 : touch ? .1 : .35, ease: 'power2.out', overwrite: true })
-      })
-      images.forEach((img, i) => {
-        if (i === index) {
-          gsap.set(img, { zIndex: 2 })
-          gsap.to(img, { autoAlpha: 1, duration: reduced ? 0 : touch ? .18 : .55, ease: 'power2.out', overwrite: true })
-        } else {
-          gsap.set(img, { zIndex: 1 })
-          gsap.to(img, { autoAlpha: 0, duration: reduced ? 0 : touch ? .15 : .4, overwrite: true })
-        }
-      })
-    }
+    // Tie the blend to scroll distance so rapid swipes never queue animations.
+    const opacity = images.map(img => gsap.quickSetter(img, 'opacity'))
+    const rowOpacity = rows.map(row => gsap.quickSetter(row, 'opacity'))
     const update = () => {
-      const center = innerHeight / 2
-      let nearest = 0, distance = Infinity
-      geometry.centers.forEach((rowCenter, i) => {
-        const d = Math.abs(geometry.top + rowCenter - window.scrollY - center)
-        if (d < distance) { nearest = i; distance = d }
+      const position = window.scrollY + innerHeight / 2 - geometry.top
+      let lower = 0
+      while (lower < rows.length - 1 && position > geometry.centers[lower + 1]) lower++
+      const upper = Math.min(lower + 1, rows.length - 1)
+      const span = geometry.centers[upper] - geometry.centers[lower]
+      const progress = span ? gsap.utils.clamp(0, 1, (position - geometry.centers[lower]) / span) : 0
+      const blend = progress * progress * (3 - 2 * progress)
+      const nearest = progress < .5 ? lower : upper
+      if (nearest !== active) {
+        active = nearest
+        rows.forEach((row, i) => { row.dataset.active = String(i === active) })
+      }
+      rows.forEach((_row, i) => {
+        const weight = reduced ? Number(i === nearest) : i === lower ? 1 - blend : i === upper ? blend : 0
+        rowOpacity[i](.325 + .675 * weight)
+        // Opaque lower layer prevents a brightness dip in the crossfade.
+        images[i].style.zIndex = i === upper ? '2' : '1'
+        opacity[i](reduced ? Number(i === nearest) : i === lower ? 1 : i === upper ? blend : 0)
       })
-      setActive(nearest)
     }
     const move = (event: PointerEvent) => {
       if (event.pointerType !== 'mouse' || !finePointer) return
@@ -105,7 +103,7 @@ export default function Services() {
       image.style.transform = `perspective(1100px) translate3d(${current.x}px, ${floatY}px, 0) rotateX(${current.tiltX}deg) rotateY(${current.tiltY}deg) rotateZ(${current.roll}deg)`
     }
     const context = gsap.context(() => {
-      gsap.set(images, { autoAlpha: 0 })
+      gsap.set(images, { opacity: 0, visibility: 'visible' })
       measure()
       const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: self => { scrollLean = !reduced ? gsap.utils.clamp(-2, 2, self.getVelocity() / 1400) : 0; update() }, onRefresh: () => { measure(); update() } })
       const entry = reveal.current!
