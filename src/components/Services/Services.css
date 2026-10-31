@@ -90,3 +90,7 @@ body.sunday-scroll-theme .sunday-footer { background: transparent; color: var(--
   .sunday-service-anchor { top: 130px; }
   .sunday-service-visual { top: -30px; }
 }
+
+/* The image centre shares the active service's viewport centre on every screen. */
+.sunday-service-anchor { top: var(--service-anchor-top, 40svh); height: var(--service-anchor-height, 120px); aspect-ratio: auto; }
+.sunday-service-visual { top: var(--service-card-offset, -24px); }

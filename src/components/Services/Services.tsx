@@ -44,6 +44,12 @@ export default function Services() {
       const rail = root.querySelector<HTMLElement>('.sunday-service-track')!.getBoundingClientRect()
       geometry.cardCenter = rail.left + rail.width / 2
       geometry.cardWidth = rail.width
+      const rowHeight = rows[0].offsetHeight
+      const portraitHeight = rail.width * 300 / 208
+      // Align the card and the service activation line before and during sticking.
+      root.style.setProperty('--service-anchor-top', `${Math.max(0, innerHeight / 2 - rowHeight / 2)}px`)
+      root.style.setProperty('--service-anchor-height', `${rowHeight}px`)
+      root.style.setProperty('--service-card-offset', `${(rowHeight - portraitHeight) / 2}px`)
       const textLeft = Math.min(...rows.map(row => row.firstElementChild!.getBoundingClientRect().left))
       const gap = innerWidth >= 1200 ? Math.min(72, innerWidth * .04) : 24
       // Reserve breathing room even at the furthest right cursor position.
@@ -93,16 +99,16 @@ export default function Services() {
     const tick = (_time: number, delta: number) => {
       if (!sceneActive || document.hidden) return
       // Native sticky positioning owns scrolling. Only the inner card floats.
-      const floatEase = 1 - Math.exp(-Math.min(delta, 64) / 220)
+      const floatEase = 1 - Math.exp(-Math.min(delta, 64) / 300)
       const px = finePointer ? pointer.x : 0, py = finePointer ? pointer.y : 0
       const nx = gsap.utils.clamp(-1, 1, px / geometry.cardWidth)
-      const horizontalEase = 1 - Math.exp(-Math.min(delta, 64) / 380)
+      const horizontalEase = 1 - Math.exp(-Math.min(delta, 64) / 650)
       current.x += (px - current.x) * horizontalEase
       current.driftY += (py * 24 - current.driftY) * floatEase
-      current.tiltX += (-py * 5 - current.tiltX) * floatEase
-      current.tiltY += (nx * 8 - current.tiltY) * floatEase
+      current.tiltX += (-py * 6 - current.tiltX) * floatEase
+      current.tiltY += (nx * 9 - current.tiltY) * floatEase
       scrollLean += (targetLean - scrollLean) * floatEase
-      current.roll += (nx * 1.8 + scrollLean - current.roll) * floatEase
+      current.roll += (nx * 3 + scrollLean - current.roll) * floatEase
       targetLean *= Math.exp(-Math.min(delta, 64) / 240)
       const bob = finePointer ? Math.sin(_time * .9) * 2 : 0
       // The same native sticky track owns vertical positioning on every device.
@@ -144,7 +150,7 @@ export default function Services() {
         root.removeEventListener('pointermove', move)
       }
     }, root)
-    return () => { disposed = true; context.revert(); gsap.killTweensOf([...rows, ...images]) }
+    return () => { disposed = true; context.revert(); ['--service-anchor-top', '--service-anchor-height', '--service-card-offset'].forEach(name => root.style.removeProperty(name)); gsap.killTweensOf([...rows, ...images]) }
   }, [])
 
   return <>
