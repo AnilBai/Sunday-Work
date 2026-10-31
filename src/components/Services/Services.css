@@ -48,7 +48,7 @@ body.sunday-scroll-theme .sunday-footer { background: transparent; color: var(--
   .sunday-services-scroll { padding-top: 160px; padding-bottom: 140px; }
   .sunday-service-name { font-size: min(48px, 12.3vw); height: min(48px, 12.3vw); }
   .sunday-service-track { left: 0; }
-  .sunday-service-anchor { top: var(--service-touch-anchor, calc(50svh - 26px)); }
+  .sunday-service-anchor { top: clamp(120px, 38svh, 320px); }
   .sunday-service-visual { top: -24px; }
   .sunday-service-visual img { border-radius: 12px; }
   .sunday-services-note { margin-top: 140px; grid-template-columns: 1fr; gap: 24px; }
@@ -63,9 +63,30 @@ body.sunday-scroll-theme .sunday-footer { background: transparent; color: var(--
 @media (prefers-reduced-motion: reduce) { .sunday-service-visual { will-change: auto; } }
 
 @media (pointer: coarse) {
-  .sunday-service-anchor { top: var(--service-touch-anchor, calc(50svh - 26px)); }
+  .sunday-service-anchor { top: clamp(120px, 38svh, 320px); }
 }
 
 .sunday-services-intro { margin: 0 0 32px; text-align: right; font-family: var(--font-sans); font-size: clamp(14px, 1.4vw, 22px); font-weight: 400; line-height: 1.3; }
 
 .sunday-services-note > p { font-family: var(--font-sans); font-size: clamp(14px, 1.4vw, 22px); font-weight: 400; line-height: 1.3; text-transform: none; }
+
+@media (max-width: 765px) {
+  .sunday-services-note > p { display: none; }
+  .sunday-services-note { gap: 0; }
+}
+/* Keep portrait previews within short phone and tablet viewports. */
+@media (max-width: 1199px) {
+  .sunday-service-track { width: min(25%, 27svh); }
+}
+.sunday-services-descriptions p { overflow-wrap: break-word; }
+
+/* Keep the sticky footprint independent of the portrait dimensions, as in Gaspar. */
+@media (max-width: 1199px) {
+  .sunday-service-track { bottom: -120px; }
+  .sunday-service-anchor { top: clamp(120px, 38svh, 320px); height: 120px; aspect-ratio: auto; }
+  .sunday-service-visual { top: -50px; }
+}
+@media (max-height: 600px) and (min-width: 810px) {
+  .sunday-service-anchor { top: 130px; }
+  .sunday-service-visual { top: -30px; }
+}
