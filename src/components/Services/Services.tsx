@@ -50,6 +50,10 @@ export default function Services() {
       root.style.setProperty('--service-anchor-top', `${Math.max(0, innerHeight / 2 - rowHeight / 2)}px`)
       root.style.setProperty('--service-anchor-height', `${rowHeight}px`)
       root.style.setProperty('--service-card-offset', `${(rowHeight - portraitHeight) / 2}px`)
+      // Reserve the portrait's overhang, cursor drift and tilted corners below the rail.
+      const railExtension = 0
+      const overhang = Math.max(0, (portraitHeight - rowHeight) / 2)
+      root.style.setProperty('--service-note-clearance', `${Math.ceil(railExtension + overhang + 80)}px`)
       const textLeft = Math.min(...rows.map(row => row.firstElementChild!.getBoundingClientRect().left))
       const gap = innerWidth >= 1200 ? Math.min(72, innerWidth * .04) : 24
       // Reserve breathing room even at the furthest right cursor position.
@@ -72,6 +76,9 @@ export default function Services() {
       const progress = span ? gsap.utils.clamp(0, 1, (position - geometry.centers[lower]) / span) : 0
       // Zero acceleration at either end keeps reversals and slow scrolling gentle.
       const blend = progress ** 3 * (progress * (progress * 6 - 15) + 10)
+      // Change images around the boundary, not throughout the previous service row.
+      const imageProgress = gsap.utils.clamp(0, 1, (progress - .3) / .4)
+      const imageBlend = imageProgress ** 3 * (imageProgress * (imageProgress * 6 - 15) + 10)
       const nearest = progress < .5 ? lower : upper
       if (nearest !== active) {
         active = nearest
@@ -85,7 +92,7 @@ export default function Services() {
         const weight = reduced ? Number(i === nearest) : i === lower ? 1 - blend : i === upper ? blend : 0
         rowOpacity[i](.325 + .675 * weight)
         // Opaque lower layer prevents a brightness dip in the crossfade.
-        opacity[i](reduced ? Number(i === nearest) : i === lower ? 1 : i === upper ? blend : 0)
+        opacity[i](reduced ? Number(i === nearest) : i === lower ? 1 : i === upper ? imageBlend : 0)
       })
     }
     const move = (event: PointerEvent) => {
@@ -150,7 +157,7 @@ export default function Services() {
         root.removeEventListener('pointermove', move)
       }
     }, root)
-    return () => { disposed = true; context.revert(); ['--service-anchor-top', '--service-anchor-height', '--service-card-offset'].forEach(name => root.style.removeProperty(name)); gsap.killTweensOf([...rows, ...images]) }
+    return () => { disposed = true; context.revert(); ['--service-anchor-top', '--service-anchor-height', '--service-card-offset', '--service-note-clearance'].forEach(name => root.style.removeProperty(name)); gsap.killTweensOf([...rows, ...images]) }
   }, [])
 
   return <>

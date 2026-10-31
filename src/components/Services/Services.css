@@ -94,3 +94,23 @@ body.sunday-scroll-theme .sunday-footer { background: transparent; color: var(--
 /* The image centre shares the active service's viewport centre on every screen. */
 .sunday-service-anchor { top: var(--service-anchor-top, 40svh); height: var(--service-anchor-height, 120px); aspect-ratio: auto; }
 .sunday-service-visual { top: var(--service-card-offset, -24px); }
+
+/* Keep text below the full floating portrait, including its rotated corners. */
+.sunday-services-note { margin-top: max(280px, var(--service-note-clearance, 280px)); }
+@media (max-width: 1199px) {
+  .sunday-services-note { margin-top: max(180px, var(--service-note-clearance, 180px)); }
+}
+@media (max-width: 809px) {
+  .sunday-services-note { margin-top: max(140px, var(--service-note-clearance, 140px)); }
+}
+
+/* Release at the last row, so the image follows it out rather than lingering below. */
+.sunday-service-track { bottom: 0; }
+.sunday-services-descriptions p { font-size: 22px; font-weight: 300; line-height: 1.35; }
+.sunday-services-note > p { font-size: clamp(12px, 1.2vw, 18px); font-weight: 300; }
+@media (max-width: 1199px) {
+  .sunday-services-descriptions p { font-size: 18px; }
+}
+@media (max-width: 809px) {
+  .sunday-services-descriptions p { font-size: 14px; }
+}
