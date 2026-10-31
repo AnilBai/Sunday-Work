@@ -32,7 +32,7 @@ export default function Services() {
     const pointer = { x: 0, y: 0, clientX: null as number | null }
     const current = { x: 0, driftY: 0, tiltX: 0, tiltY: 0, roll: 0 }
     let active = -1, disposed = false, sceneActive = false
-    let upperLayer = -1
+    let imageActive = -1
     const geometry = { top: 0, cardCenter: 0, cardWidth: 1, pointerRange: 0, centers: [] as number[] }
     let scrollLean = 0
     let targetLean = 0
@@ -65,7 +65,6 @@ export default function Services() {
       geometry.centers = rows.map(row => row.getBoundingClientRect().top - bounds.top + row.offsetHeight / 2)
     }
     // Tie the blend to scroll distance so rapid swipes never queue animations.
-    const opacity = images.map(img => gsap.quickSetter(img, 'opacity'))
     const rowOpacity = rows.map(row => gsap.quickSetter(row, 'opacity'))
     const update = () => {
       const position = window.scrollY + innerHeight / 2 - geometry.top
@@ -74,25 +73,31 @@ export default function Services() {
       const upper = Math.min(lower + 1, rows.length - 1)
       const span = geometry.centers[upper] - geometry.centers[lower]
       const progress = span ? gsap.utils.clamp(0, 1, (position - geometry.centers[lower]) / span) : 0
-      // Zero acceleration at either end keeps reversals and slow scrolling gentle.
-      const blend = progress ** 3 * (progress * (progress * 6 - 15) + 10)
-      // Change images around the boundary, not throughout the previous service row.
-      const imageProgress = gsap.utils.clamp(0, 1, (progress - .3) / .4)
-      const imageBlend = imageProgress ** 3 * (imageProgress * (imageProgress * 6 - 15) + 10)
       const nearest = progress < .5 ? lower : upper
       if (nearest !== active) {
         active = nearest
         rows.forEach((row, i) => { row.dataset.active = String(i === active) })
       }
-      if (upper !== upperLayer) {
-        images.forEach((img, i) => { img.style.zIndex = i === upper ? '2' : '1' })
-        upperLayer = upper
+      if (nearest !== imageActive) {
+        imageActive = nearest
+        images.forEach((img, i) => {
+          gsap.set(img, { zIndex: i === nearest ? 2 : 1, clipPath: 'none' })
+          gsap.to(img, { opacity: Number(i === nearest), duration: reduced ? 0 : .22, ease: 'power2.out', overwrite: true })
+        })
       }
       rows.forEach((_row, i) => {
-        const weight = reduced ? Number(i === nearest) : i === lower ? 1 - blend : i === upper ? blend : 0
+        // One continuous focus field moves through the list, rather than handing
+        // opacity from one discrete row pair to the next.
+        const previous = geometry.centers[Math.max(0, i - 1)]
+        const next = geometry.centers[Math.min(rows.length - 1, i + 1)]
+        const stride = Math.max(1, (next - previous) / (i > 0 && i < rows.length - 1 ? 2 : 1))
+        const focus = gsap.utils.clamp(geometry.centers[0], geometry.centers[rows.length - 1], position)
+        const distance = Math.min(1, Math.abs(focus - geometry.centers[i]) / (stride * 1.25))
+        const weight = reduced ? Number(i === nearest) : (1 + Math.cos(distance * Math.PI)) / 2
         rowOpacity[i](.325 + .675 * weight)
-        // Opaque lower layer prevents a brightness dip in the crossfade.
-        opacity[i](reduced ? Number(i === nearest) : i === lower ? 1 : i === upper ? imageBlend : 0)
+        // Restore the soft dissolve; a short time-based fade cannot get stuck
+        // showing two images when scrolling pauses midway between services.
+
       })
     }
     const move = (event: PointerEvent) => {
@@ -106,18 +111,18 @@ export default function Services() {
     const tick = (_time: number, delta: number) => {
       if (!sceneActive || document.hidden) return
       // Native sticky positioning owns scrolling. Only the inner card floats.
-      const floatEase = 1 - Math.exp(-Math.min(delta, 64) / 300)
+      const floatEase = 1 - Math.exp(-Math.min(delta, 64) / 380)
       const px = finePointer ? pointer.x : 0, py = finePointer ? pointer.y : 0
-      const nx = gsap.utils.clamp(-1, 1, px / geometry.cardWidth)
-      const horizontalEase = 1 - Math.exp(-Math.min(delta, 64) / 650)
+      const nx = gsap.utils.clamp(-1, 1, current.x / geometry.cardWidth)
+      const horizontalEase = 1 - Math.exp(-Math.min(delta, 64) / 1050)
       current.x += (px - current.x) * horizontalEase
-      current.driftY += (py * 24 - current.driftY) * floatEase
-      current.tiltX += (-py * 6 - current.tiltX) * floatEase
-      current.tiltY += (nx * 9 - current.tiltY) * floatEase
+      current.driftY += (py * 8 - current.driftY) * floatEase
+      current.tiltX += (-py * 3 - current.tiltX) * floatEase
+      current.tiltY += (nx * 5 - current.tiltY) * floatEase
       scrollLean += (targetLean - scrollLean) * floatEase
-      current.roll += (nx * 3 + scrollLean - current.roll) * floatEase
+      current.roll += (nx * 2 + scrollLean - current.roll) * floatEase
       targetLean *= Math.exp(-Math.min(delta, 64) / 240)
-      const bob = finePointer ? Math.sin(_time * .9) * 2 : 0
+      const bob = finePointer ? Math.sin(_time * .7) * .6 : 0
       // The same native sticky track owns vertical positioning on every device.
       // A delayed mobile offset makes the card sink after each swipe ends.
       const floatY = reduced ? 0 : current.driftY + bob
@@ -126,7 +131,7 @@ export default function Services() {
     const context = gsap.context(() => {
       gsap.set(images, { opacity: 0, visibility: 'visible' })
       measure()
-      const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: self => { targetLean = !reduced ? gsap.utils.clamp(touch ? -.65 : -1.5, touch ? .65 : 1.5, self.getVelocity() / 1800) : 0; update() }, onRefresh: () => { measure(); update() } })
+      const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: self => { targetLean = !reduced ? gsap.utils.clamp(touch ? -.25 : -.6, touch ? .25 : .6, self.getVelocity() / 1800) : 0; update() }, onRefresh: () => { measure(); update() } })
       const entry = reveal.current!
       gsap.set(entry, { autoAlpha: 0, scale: 1, y: 0 })
       const visibility = ScrollTrigger.create({
