@@ -28,11 +28,12 @@ export default function Services() {
     const images = Array.from(image.querySelectorAll<HTMLImageElement>('img'))
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
     const touch = matchMedia('(pointer: coarse)').matches
+    const mobile = touch || innerWidth <= 809
     const finePointer = !reduced && matchMedia('(hover: hover) and (pointer: fine)').matches
     const pointer = { x: 0, y: 0, clientX: null as number | null }
-    const current = { x: 0, driftY: 0, tiltX: 0, tiltY: 0, roll: 0, follow: 0 }
+    const current = { x: 0, driftY: 0, tiltX: 0, tiltY: 0, roll: 0 }
     let active = -1, disposed = false, sceneActive = false
-    const geometry = { top: 0, cardCenter: 0, cardWidth: 1, pointerRange: 0, travel: 0, anchor: 0, centers: [] as number[] }
+    const geometry = { top: 0, cardCenter: 0, cardWidth: 1, pointerRange: 0, centers: [] as number[] }
     let scrollLean = 0
     let targetLean = 0
     // Decode each layer before its first crossfade, avoiding a first-use hitch.
@@ -44,8 +45,6 @@ export default function Services() {
       // rather than several short rows later at a fixed 150px viewport offset.
       root.style.setProperty('--service-touch-anchor', `${Math.max(120, innerHeight / 2 - rows[0].offsetHeight / 2)}px`)
       const rail = root.querySelector<HTMLElement>('.sunday-service-track')!.getBoundingClientRect()
-      geometry.anchor = Math.max(120, innerHeight / 2 - rows[0].offsetHeight / 2)
-      geometry.travel = Math.max(0, rail.height - root.querySelector<HTMLElement>('.sunday-service-anchor')!.offsetHeight)
       geometry.cardCenter = rail.left + rail.width / 2
       geometry.cardWidth = rail.width
       const textLeft = Math.min(...rows.map(row => row.firstElementChild!.getBoundingClientRect().left))
@@ -106,12 +105,9 @@ export default function Services() {
       current.roll += (nx * 1.8 + scrollLean - current.roll) * floatEase
       targetLean *= Math.exp(-Math.min(delta, 64) / 240)
       const bob = finePointer ? Math.sin(_time * .9) * 2 : 0
-      // Ease only the small mobile follow offset; native sticky remains the track.
-      const mobile = touch || innerWidth <= 809
-      const travel = mobile && !reduced ? gsap.utils.clamp(0, geometry.travel, window.scrollY + geometry.anchor - geometry.top) : 0
-      current.follow += (travel - current.follow) * (1 - Math.exp(-Math.min(delta, 64) / 180))
-      current.follow = gsap.utils.clamp(travel - 18, travel + 18, current.follow)
-      const floatY = reduced ? 0 : current.driftY + bob + (mobile ? current.follow - travel : 0)
+      // The same native sticky track owns vertical positioning on every device.
+      // A delayed mobile offset makes the card sink after each swipe ends.
+      const floatY = reduced ? 0 : current.driftY + bob
       image.style.transform = `perspective(1100px) translate3d(${current.x}px, ${floatY}px, 0) rotateX(${current.tiltX}deg) rotateY(${current.tiltY}deg) rotateZ(${current.roll}deg)`
     }
     const context = gsap.context(() => {
@@ -119,18 +115,18 @@ export default function Services() {
       measure()
       const trigger = ScrollTrigger.create({ trigger: root, start: 'top bottom', end: 'bottom top', onUpdate: self => { targetLean = !reduced ? gsap.utils.clamp(touch ? -.65 : -1.5, touch ? .65 : 1.5, self.getVelocity() / 1800) : 0; update() }, onRefresh: () => { measure(); update() } })
       const entry = reveal.current!
-      gsap.set(entry, { autoAlpha: 0, scale: .96, y: 16 })
+      gsap.set(entry, { autoAlpha: 0, scale: mobile ? 1 : .96, y: mobile ? 0 : 16 })
       const visibility = ScrollTrigger.create({
         trigger: items, start: 'top 80%', end: 'bottom 15%',
         onToggle: self => {
           sceneActive = self.isActive
           entry.dataset.visible = String(self.isActive)
-          gsap.to(entry, { autoAlpha: self.isActive ? 1 : 0, scale: self.isActive ? 1 : .96, y: self.isActive ? 0 : 16, duration: reduced ? 0 : touch ? .18 : .55, ease: 'power2.out', overwrite: true })
+          gsap.to(entry, { autoAlpha: self.isActive ? 1 : 0, scale: self.isActive || mobile ? 1 : .96, y: self.isActive || mobile ? 0 : 16, duration: reduced ? 0 : touch ? .18 : .55, ease: 'power2.out', overwrite: true })
         },
       })
       sceneActive = visibility.isActive
       entry.dataset.visible = String(visibility.isActive)
-      gsap.set(entry, { autoAlpha: visibility.isActive ? 1 : 0, scale: visibility.isActive ? 1 : .96, y: visibility.isActive ? 0 : 16 })
+      gsap.set(entry, { autoAlpha: visibility.isActive ? 1 : 0, scale: visibility.isActive || mobile ? 1 : .96, y: visibility.isActive || mobile ? 0 : 16 })
       update()
       tick(0, 16.667)
       const resize = new ResizeObserver(() => { if (!disposed) { measure(); update() } })
