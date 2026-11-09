@@ -5,7 +5,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import AsciiField from './AsciiField'
 import './Homepage.css'
 import Services from '../../components/Services/Services'
+import WorkTogether from "../../components/WorkTogether/WorkTogether"
 import Projects from '../../components/Projects/Projects'
+import HomeAbout from '../../components/HomeAbout/HomeAbout'
 
 gsap.registerPlugin(ScrollTrigger)
 export default function Homepage() {
@@ -41,6 +43,8 @@ export default function Homepage() {
     <div ref={wordmark} className="sunday-wordmark stride-wordmark"><h1><Link to="/" aria-label="Sunday homepage" onClick={()=>window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}><svg viewBox="0 0 1000 235" role="img" aria-label="Sunday"><text x="0" y="215" textLength="1000" lengthAdjust="spacingAndGlyphs">SUNDAY</text></svg></Link></h1></div>
     <section className="stride-about" aria-label="About Sunday"><p>{statement.split(' ').map((word,index)=><span key={index}>{word} </span>)}</p></section>
     <Projects />
+    <HomeAbout />
     <Services />
+    <WorkTogether />
   </main>
 }

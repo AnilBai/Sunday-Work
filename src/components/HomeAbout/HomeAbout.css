@@ -1,0 +1,50 @@
+.home-about {
+  position: relative;
+  padding: 400px 0 500px;
+  color: var(--sunday-scroll-ink, #fff);
+  overflow: clip;
+  scroll-margin-top: 80px;
+}
+
+.home-about-inner { position: relative; max-width: 1704px; margin-inline: auto; }
+.home-about-copy { position: relative; z-index: 2; text-align: center; padding-inline: 20px; }
+.home-about-title {
+  margin: 0;
+  padding: 64px 0 96px;
+  font: 400 clamp(40px, 8.33vw, 120px)/1 'Sunday Services Inter', var(--font-sans);
+  letter-spacing: -.08em;
+}
+.home-about-line { display: block; white-space: nowrap; letter-spacing: inherit; }
+.home-about-line span { letter-spacing: inherit; }
+.home-about-reveal { display: inline-block; }
+.home-about-description {
+  max-width: 790px;
+  margin: 0 auto;
+  font-size: clamp(20px, 1.95vw, 28px);
+  line-height: 1.2;
+  letter-spacing: -.035em;
+}
+.home-about-description span { letter-spacing: inherit; }
+
+.home-about-portraits { position: absolute; inset: 0; pointer-events: none; }
+.home-about-portrait { position: absolute; overflow: hidden; border-radius: 24px; }
+.home-about-portrait img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.home-about-portrait-1 { width: 10.27%; aspect-ratio: 148 / 217; top: 252px; left: -4.24%; }
+.home-about-portrait-2 { width: 11.2%; aspect-ratio: 161 / 237; top: calc(100% - 58px); right: 2.7%; }
+.home-about-portrait-3 { width: 18.67%; aspect-ratio: 269 / 326; top: calc(100% + 101px); left: 34.93%; }
+.home-about-portrait-4 { width: 11.2%; aspect-ratio: 161 / 237; top: calc(100% + 27px); left: 4.79%; }
+.home-about-portrait-5 { width: 13.07%; aspect-ratio: 188 / 247; top: -18px; right: 1.94%; }
+.home-about-portrait-6 { width: 10.27%; aspect-ratio: 148 / 217; top: -148px; left: 9.03%; }
+
+@media (max-width: 809px) {
+  .home-about { padding: 340px 0 400px; }
+  .home-about-title { padding: 20px 0 38px; font-size: clamp(24px, 8.8vw, 52px); line-height: 1; letter-spacing: -.06em; }
+  .home-about-description { max-width: 440px; font-size: 16px; }
+  .home-about-portrait { border-radius: 16px; }
+  .home-about-portrait-1 { width: 18%; top: -57px; left: 4.36%; }
+  .home-about-portrait-2 { width: 31.4%; top: calc(100% + 33px); right: 9.6%; }
+  .home-about-portrait-3 { width: 18%; top: calc(100% + 264px); left: 48%; }
+  .home-about-portrait-4 { width: 22.44%; top: calc(100% + 99px); left: 6.67%; }
+  .home-about-portrait-5 { width: 20.64%; top: -109px; right: 5.13%; }
+  .home-about-portrait-6 { width: 27%; top: -255px; left: 26.67%; }
+}

@@ -1,0 +1,92 @@
+.work-together {
+  overflow: clip;
+  padding-top: clamp(72px, 12vw, 180px);
+  color: #fff;
+  text-align: center;
+}
+
+.work-together-collage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22% 34% 22%;
+  align-items: end;
+  justify-content: space-between;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 5%;
+}
+
+.work-together-collage img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9 / 10;
+  object-fit: cover;
+  border-radius: clamp(6px, 1.25vw, 18px);
+}
+
+.work-together-collage img:nth-child(2) {
+  position: relative;
+  z-index: 1;
+}
+
+.work-together-collage img:first-child {
+  width: 80%;
+  margin: 0 auto 12%;
+  transform: rotate(-14deg);
+}
+
+.work-together-collage img:last-child {
+  aspect-ratio: 3 / 2;
+  margin-bottom: 12%;
+  transform: rotate(14deg);
+}
+
+.work-together h2 {
+  margin: clamp(10px, 1.5vw, 24px) 0 0;
+  font-size: clamp(32px, 10vw, 154px);
+  font-weight: 900;
+  line-height: .92;
+  letter-spacing: -.055em;
+  text-transform: uppercase;
+}
+
+.work-together-link {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  margin: clamp(28px, 4vw, 60px) 0 clamp(58px, 8vw, 116px);
+  padding-block: 10px;
+  font-size: clamp(12px, 1.3vw, 16px);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.work-together-link::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: currentColor;
+  content: '';
+  transform: scaleX(.2);
+  transform-origin: left;
+}
+
+.work-together-link:hover::after,
+.work-together-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .work-together-link::after {
+    transition: transform .25s ease;
+  }
+}
+
+.work-together-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: #2b1915;
+  opacity: 0;
+  pointer-events: none;
+}
